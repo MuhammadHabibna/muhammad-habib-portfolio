@@ -1,7 +1,6 @@
 import { fetchPortfolioData } from "@/lib/fetch"
 import { Navbar } from "@/components/Navbar"
-import { Hero } from "@/components/sections/Hero"
-import { About } from "@/components/sections/About"
+import { BentoProfile } from "@/components/sections/BentoProfile"
 import { Projects } from "@/components/sections/Projects"
 import { Certifications } from "@/components/sections/Certifications"
 import { Organizations } from "@/components/sections/Organizations"
@@ -15,8 +14,7 @@ export default async function Home() {
   return (
     <div className="relative min-h-screen">
       <Navbar />
-      <Hero profile={data.profile} socials={data.socials} />
-      <About />
+      <BentoProfile profile={data.profile} socials={data.socials} />
       <Projects projects={data.projects} />
       <Certifications certifications={data.certifications} />
       <Organizations organizations={data.organizations} />

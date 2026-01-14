@@ -18,7 +18,18 @@ import { Loader2, X, Plus } from "lucide-react"
 const projectSchema = z.object({
     title: z.string().min(2),
     slug: z.string().min(2),
-    type: z.enum(["PERSONAL", "TEAM"]),
+    type: z.enum([
+        "Klasifikasi Citra",
+        "Object Detection",
+        "Segmentasi Citra",
+        "Object Character Recognition",
+        "Clustering (Tabular)",
+        "Klasifikasi (Tabular)",
+        "Regresi (Tabular)",
+        "Forecasting (Tabular)",
+        "Analisis Sentiment",
+        "Klasifikasi Teks"
+    ]),
     status: z.enum(["DRAFT", "PUBLISHED"]),
     start_date: z.string().optional(),
     end_date: z.string().optional(),
@@ -48,7 +59,7 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
     const defaultValues: Partial<z.infer<typeof projectSchema>> = {
         title: initialData?.title || "",
         slug: initialData?.slug || "",
-        type: initialData?.type || "PERSONAL",
+        type: initialData?.type || "Klasifikasi Citra",
         status: initialData?.status || "DRAFT",
         start_date: initialData?.start_date,
         end_date: initialData?.end_date,
@@ -132,7 +143,7 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
                         name="type"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Type</FormLabel>
+                                <FormLabel>Type / Category</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                     <FormControl>
                                         <SelectTrigger>
@@ -140,8 +151,16 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        <SelectItem value="PERSONAL">Personal</SelectItem>
-                                        <SelectItem value="TEAM">Team</SelectItem>
+                                        <SelectItem value="Klasifikasi Citra">Klasifikasi Citra</SelectItem>
+                                        <SelectItem value="Object Detection">Object Detection</SelectItem>
+                                        <SelectItem value="Segmentasi Citra">Segmentasi Citra</SelectItem>
+                                        <SelectItem value="Object Character Recognition">OCR</SelectItem>
+                                        <SelectItem value="Clustering (Tabular)">Clustering (Tabular)</SelectItem>
+                                        <SelectItem value="Klasifikasi (Tabular)">Klasifikasi (Tabular)</SelectItem>
+                                        <SelectItem value="Regresi (Tabular)">Regresi (Tabular)</SelectItem>
+                                        <SelectItem value="Forecasting (Tabular)">Forecasting (Tabular)</SelectItem>
+                                        <SelectItem value="Analisis Sentiment">Analisis Sentiment</SelectItem>
+                                        <SelectItem value="Klasifikasi Teks">Klasifikasi Teks</SelectItem>
                                     </SelectContent>
                                 </Select>
                                 <FormMessage />

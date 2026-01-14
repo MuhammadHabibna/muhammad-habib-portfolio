@@ -28,22 +28,24 @@ export function Certifications({ certifications }: CertificationsProps) {
                     {certifications.map((cert) => (
                         <Card
                             key={cert.id}
-                            className="group hover:shadow-lg transition-all cursor-pointer border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm"
+                            className="group hover:shadow-lg transition-all cursor-pointer border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm overflow-hidden"
                             onClick={() => setSelectedCert(cert)}
                         >
-                            <CardHeader className="flex flex-row items-center gap-4 space-y-0">
-                                <div className="p-2 bg-sky-100 dark:bg-sky-900/30 rounded-lg text-sky-600">
-                                    <Award className="h-6 w-6" />
-                                </div>
-                                <div className="flex-1">
-                                    <CardTitle className="text-base line-clamp-2 leading-tight group-hover:text-primary transition-colors">
-                                        {cert.name}
-                                    </CardTitle>
-                                    <p className="text-sm text-muted-foreground mt-1">{cert.issuer}</p>
-                                </div>
+                            <div className="h-32 bg-slate-100 dark:bg-slate-800/50 flex items-center justify-center p-4">
+                                {cert.certificate_image ? (
+                                    <img src={cert.certificate_image} alt={cert.name} className="h-full object-contain" />
+                                ) : (
+                                    <Award className="h-12 w-12 text-sky-200 dark:text-sky-900" />
+                                )}
+                            </div>
+                            <CardHeader className="flex flex-col gap-1 p-4">
+                                <CardTitle className="text-base line-clamp-2 leading-tight group-hover:text-primary transition-colors h-10">
+                                    {cert.name}
+                                </CardTitle>
+                                <p className="text-sm text-muted-foreground line-clamp-1">{cert.issuer}</p>
                             </CardHeader>
-                            <CardContent>
-                                <p className="text-xs text-muted-foreground">Issued: {cert.issue_date}</p>
+                            <CardContent className="p-4 pt-0">
+                                <p className="text-xs text-muted-foreground">Issued: {cert.issue_date ? new Date(cert.issue_date).getFullYear() : 'N/A'}</p>
                             </CardContent>
                         </Card>
                     ))}
