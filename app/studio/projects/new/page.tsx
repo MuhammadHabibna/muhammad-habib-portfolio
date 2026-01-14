@@ -1,3 +1,8 @@
+"use client";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+
 import { ProjectForm } from "@/components/admin/ProjectForm"
 
 export default function NewProjectPage() {
