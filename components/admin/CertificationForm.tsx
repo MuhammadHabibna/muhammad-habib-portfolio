@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Loader2 } from "lucide-react"
+import { Loader2, Trash } from "lucide-react"
 
 const certificationSchema = z.object({
     name: z.string().min(2, "Name is required"),
@@ -49,19 +49,27 @@ export function CertificationForm({ initialData }: CertificationFormProps) {
     const onSubmit = async (values: z.infer<typeof certificationSchema>) => {
         setLoading(true)
         try {
+            const payload = {
+                ...values,
+                issue_date: values.issue_date || null,
+                expiry_date: values.expiry_date || null,
+                credential_id: values.credential_id || null,
+                credential_url: values.credential_url || null,
+            }
+
             if (initialData) {
-                const { error } = await supabase.from('certifications').update(values).eq('id', initialData.id)
+                const { error } = await supabase.from('certifications').update(payload).eq('id', initialData.id)
                 if (error) throw error
             } else {
-                const { error } = await supabase.from('certifications').insert([values])
+                const { error } = await supabase.from('certifications').insert([payload])
                 if (error) throw error
             }
 
             router.push("/studio/certifications")
             router.refresh()
-        } catch (error) {
+        } catch (error: any) {
             console.error(error)
-            alert("Error saving certification")
+            alert(error.message || "Error saving certification")
         } finally {
             setLoading(false)
         }
@@ -180,6 +188,33 @@ export function CertificationForm({ initialData }: CertificationFormProps) {
                     {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     {initialData ? "Update Certification" : "Create Certification"}
                 </Button>
+
+                {initialData && (
+                    <Button
+                        type="button"
+                        variant="destructive"
+                        disabled={loading}
+                        className="w-full mt-2"
+                        onClick={async () => {
+                            if (confirm("Are you sure you want to delete this certification?")) {
+                                setLoading(true)
+                                try {
+                                    const { error } = await supabase.from('certifications').delete().eq('id', initialData.id)
+                                    if (error) throw error
+                                    router.push("/studio/certifications")
+                                    router.refresh()
+                                } catch (error: any) {
+                                    console.error(error)
+                                    alert(error.message || "Error deleting certification")
+                                    setLoading(false)
+                                }
+                            }
+                        }}
+                    >
+                        <Trash className="mr-2 h-4 w-4" />
+                        Delete Certification
+                    </Button>
+                )}
             </form>
         </Form>
     )

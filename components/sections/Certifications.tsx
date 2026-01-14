@@ -137,6 +137,17 @@ export function Certifications({ certifications }: CertificationsProps) {
                                                 <Calendar className="w-3 h-3" />
                                                 <span>Issued {cert.issue_date ? new Date(cert.issue_date).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : 'N/A'}</span>
                                             </div>
+
+                                            {cert.credential_url && (
+                                                <div className="pt-2">
+                                                    <Button variant="outline" size="sm" asChild className="h-7 text-xs gap-1">
+                                                        <a href={cert.credential_url} target="_blank" rel="noopener noreferrer">
+                                                            View Credential
+                                                            <ExternalLink className="w-3 h-3" />
+                                                        </a>
+                                                    </Button>
+                                                </div>
+                                            )}
                                         </div>
 
                                         <div className="pt-4 flex items-center justify-between border-t border-slate-100 dark:border-slate-800/50 mt-auto">
