@@ -53,7 +53,15 @@ export default async function Home() {
     <div className="relative min-h-screen">
       <VectorCloudBackground />
       <Navbar />
-      <BentoProfile profile={portfolioData.profile} socials={portfolioData.socials} />
+      <BentoProfile
+        profile={portfolioData.profile}
+        socials={portfolioData.socials}
+        counts={{
+          projects: portfolioData.projects.length,
+          certifications: portfolioData.certifications.length,
+          achievements: portfolioData.achievements.length
+        }}
+      />
       <Projects projects={portfolioData.projects} />
       <Achievements achievements={portfolioData.achievements} />
       <Organizations organizations={portfolioData.organizations} />

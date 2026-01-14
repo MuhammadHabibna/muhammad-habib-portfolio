@@ -10,9 +10,14 @@ import { Badge } from "@/components/ui/badge"
 interface BentoProfileProps {
     profile?: Profile | null
     socials?: SocialLink[]
+    counts?: {
+        projects: number
+        certifications: number
+        achievements: number
+    }
 }
 
-export function BentoProfile({ profile, socials }: BentoProfileProps) {
+export function BentoProfile({ profile, socials, counts }: BentoProfileProps) {
     const fullName = profile?.full_name || "Portfolio Owner"
     const headline = profile?.headline || "Full Stack Engineer"
     const bioShort = profile?.bio_short || "Building digital experiences."
@@ -37,27 +42,27 @@ export function BentoProfile({ profile, socials }: BentoProfileProps) {
     }
 
     return (
-        <section className="py-24 container px-4 md:px-6">
+        <section className="py-24 container px-4 md:px-6 relative z-10">
             <motion.div
                 variants={container}
                 initial="hidden"
                 animate="show"
                 className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto"
             >
-                {/* 1. Main Profile Card (Left Column - Spans 2 rows on desktop if needed, or just full height) */}
-                <motion.div variants={item} className="md:col-span-1 md:row-span-2">
+                {/* Card A: Profile (Left Column) */}
+                <motion.div variants={item} className="md:col-span-1">
                     <Card className="h-full border-none shadow-xl bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950 overflow-hidden relative group">
                         <div className="absolute inset-0 bg-sky-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                         <CardContent className="p-8 flex flex-col items-center text-center h-full justify-center space-y-6 relative z-10">
                             <div className="relative">
-                                <div className="w-40 h-40 rounded-full border-4 border-white dark:border-slate-800 shadow-2xl overflow-hidden">
+                                <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white dark:border-slate-800 shadow-2xl overflow-hidden">
                                     <img src={avatarUrl} alt={fullName} className="w-full h-full object-cover" />
                                 </div>
                                 <div className="absolute bottom-2 right-2 bg-green-500 w-5 h-5 rounded-full border-2 border-white dark:border-slate-900" title="Available for work" />
                             </div>
 
                             <div className="space-y-2">
-                                <h1 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300">
+                                <h1 className="text-2xl md:text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300">
                                     {fullName}
                                 </h1>
                                 <p className="text-sky-600 font-medium text-lg">{headline}</p>
@@ -66,35 +71,7 @@ export function BentoProfile({ profile, socials }: BentoProfileProps) {
                                 </div>
                             </div>
 
-                            <div className="flex gap-3">
-                                {socials?.map(s => (
-                                    <Button key={s.id} variant="ghost" size="icon" className="rounded-full hover:bg-sky-100 dark:hover:bg-sky-900/20 hover:text-sky-600" asChild>
-                                        <a href={s.url} target="_blank" rel="noopener">
-                                            {/* Icon mapping would be ideal here, using a generic one for now if unknown */}
-                                            <ExternalLink className="w-5 h-5" />
-                                            <span className="sr-only">{s.platform}</span>
-                                        </a>
-                                    </Button>
-                                ))}
-                                {!socials?.length && (
-                                    <>
-                                        <Button variant="ghost" size="icon" className="rounded-full">
-                                            <Github className="w-5 h-5" />
-                                        </Button>
-                                        <Button variant="ghost" size="icon" className="rounded-full">
-                                            <Linkedin className="w-5 h-5" />
-                                        </Button>
-                                        <Button variant="ghost" size="icon" className="rounded-full">
-                                            <Mail className="w-5 h-5" />
-                                        </Button>
-                                    </>
-                                )}
-                            </div>
-
-                            <div className="pt-4 w-full grid gap-3">
-                                <Button className="w-full rounded-full bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 border-none shadow-lg shadow-sky-500/20">
-                                    Contact Me
-                                </Button>
+                            <div className="w-full pt-2">
                                 {cvUrl && (
                                     <Button variant="outline" className="w-full rounded-full">
                                         <Download className="mr-2 h-4 w-4" /> Download CV
@@ -105,7 +82,7 @@ export function BentoProfile({ profile, socials }: BentoProfileProps) {
                     </Card>
                 </motion.div>
 
-                {/* 2. About Me Card (Top Right - Spans 2 cols) */}
+                {/* Card B: About (Right Top - Spans 2 cols) */}
                 <motion.div variants={item} className="md:col-span-2">
                     <Card className="h-full border-none shadow-lg bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm">
                         <CardContent className="p-8 space-y-4">
@@ -117,14 +94,13 @@ export function BentoProfile({ profile, socials }: BentoProfileProps) {
                                 {bioShort}
                             </p>
                             <p className="text-muted-foreground leading-relaxed">
-                                {bioLong || "I specialize in building scalable web applications and intuitive user interfaces. With a focus on performance and accessibility, I aim to deliver products that make a difference."}
+                                {bioLong}
                             </p>
 
-                            <div className="pt-4">
-                                <h3 className="font-semibold mb-3">What I Do</h3>
+                            <div className="pt-4 mt-auto">
                                 <div className="flex flex-wrap gap-2">
-                                    <Badge variant="secondary" className="px-3 py-1">Full Stack Development</Badge>
-                                    <Badge variant="secondary" className="px-3 py-1">UI/UX Design</Badge>
+                                    <Badge variant="secondary" className="px-3 py-1">Full Stack</Badge>
+                                    <Badge variant="secondary" className="px-3 py-1">System Design</Badge>
                                     <Badge variant="secondary" className="px-3 py-1">Cloud Architecture</Badge>
                                     <Badge variant="secondary" className="px-3 py-1">AI Integration</Badge>
                                 </div>
@@ -133,30 +109,52 @@ export function BentoProfile({ profile, socials }: BentoProfileProps) {
                     </Card>
                 </motion.div>
 
-                {/* 3. Stats/Highlights Card (Bottom Right 1) */}
+                {/* Card C: Quick Links (Bottom Left) */}
                 <motion.div variants={item} className="md:col-span-1">
-                    <Card className="h-full border-none shadow-lg bg-indigo-600 text-white overflow-hidden relative">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-fullblur-3xl -mr-16 -mt-16 pointer-events-none" />
-                        <CardContent className="p-6 flex flex-col justify-center h-full space-y-1">
-                            <div className="text-5xl font-bold tracking-tight">3+</div>
-                            <div className="text-indigo-100 font-medium">Years Experience</div>
-                            <p className="text-indigo-200 text-sm mt-2">Constantly learning and evolving.</p>
-                        </CardContent>
-                    </Card>
-                </motion.div>
-
-                {/* 4. Additional Info/Stack Card (Bottom Right 2) */}
-                <motion.div variants={item} className="md:col-span-1">
-                    <Card className="h-full border-none shadow-lg bg-slate-900 text-white dark:bg-slate-800">
-                        <CardContent className="p-6 flex flex-col justify-center h-full">
-                            <h3 className="text-xl font-bold text-sky-400 mb-2">Tech Stack</h3>
-                            <div className="flex flex-wrap gap-2 text-sm text-slate-300">
-                                <span>Next.js</span> • <span>TypeScript</span> • <span>Tailwind</span> • <span>Supabase</span> • <span>Python</span> • <span>Framer Motion</span>
+                    <Card className="h-full border-none shadow-lg bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm">
+                        <CardContent className="p-6 flex flex-col justify-center h-full space-y-4">
+                            <h3 className="font-semibold text-center mb-2">Connect</h3>
+                            <div className="flex justify-center gap-4">
+                                {socials?.map(s => (
+                                    <Button key={s.id} variant="outline" size="icon" className="rounded-full w-12 h-12 hover:bg-sky-50 dark:hover:bg-sky-900/20 hover:text-sky-600 hover:border-sky-200" asChild>
+                                        <a href={s.url} target="_blank" rel="noopener" title={s.platform}>
+                                            <ExternalLink className="w-5 h-5" />
+                                            <span className="sr-only">{s.platform}</span>
+                                        </a>
+                                    </Button>
+                                ))}
+                                <Button variant="default" size="icon" className="rounded-full w-12 h-12 bg-primary text-primary-foreground shadow-lg shadow-primary/20" asChild>
+                                    <a href={`mailto:${profile?.contact_email || ''}`} title="Email Me">
+                                        <Mail className="w-5 h-5" />
+                                    </a>
+                                </Button>
                             </div>
                         </CardContent>
                     </Card>
                 </motion.div>
 
+                {/* Card D: Highlight Stats (Bottom Right - Spans 2 cols) */}
+                <motion.div variants={item} className="md:col-span-2">
+                    <Card className="h-full border-none shadow-lg bg-indigo-600 text-white overflow-hidden relative">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
+                        <CardContent className="p-6 h-full flex items-center justify-around text-center relative z-10">
+                            <div className="space-y-1">
+                                <div className="text-4xl md:text-5xl font-bold tracking-tight">{counts?.projects || 0}</div>
+                                <div className="text-indigo-200 text-sm font-medium uppercase tracking-wider">Projects</div>
+                            </div>
+                            <div className="w-px h-16 bg-indigo-500/50" />
+                            <div className="space-y-1">
+                                <div className="text-4xl md:text-5xl font-bold tracking-tight">{counts?.achievements || 0}</div>
+                                <div className="text-indigo-200 text-sm font-medium uppercase tracking-wider">Awards</div>
+                            </div>
+                            <div className="w-px h-16 bg-indigo-500/50" />
+                            <div className="space-y-1">
+                                <div className="text-4xl md:text-5xl font-bold tracking-tight">{counts?.certifications || 0}</div>
+                                <div className="text-indigo-200 text-sm font-medium uppercase tracking-wider">Certs</div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </motion.div>
             </motion.div>
         </section>
     )
