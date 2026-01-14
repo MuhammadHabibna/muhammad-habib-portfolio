@@ -7,10 +7,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ImageUpload } from "@/components/admin/ImageUpload"
 import { Card, CardContent } from "@/components/ui/card"
@@ -28,9 +27,11 @@ const projectSchema = z.object({
     description: z.string().optional(),
     info_url: z.string().url().optional().or(z.literal("")),
     github_url: z.string().url().optional().or(z.literal("")),
+    thumbnail_image: z.string().optional().nullable(),
+    tech_stack: z.array(z.string()),
+    highlights: z.array(z.string()),
 })
 
-// Extended schema handling manual array management
 interface ProjectFormProps {
     initialData?: any
 }
@@ -39,37 +40,38 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
     const router = useRouter()
     const supabase = createClient()
     const [loading, setLoading] = useState(false)
-    const [highlights, setHighlights] = useState<string[]>(initialData?.highlights || [])
-    const [techStack, setTechStack] = useState<string[]>(initialData?.tech_stack || [])
-    const [thumbnail, setThumbnail] = useState<string | null>(initialData?.thumbnail_image || null)
+
+    // Local state for array inputs to handle the input field value before adding to the form array
+    const [newTech, setNewTech] = useState("")
+    const [newItem, setNewItem] = useState("")
+
+    const defaultValues: Partial<z.infer<typeof projectSchema>> = {
+        title: initialData?.title || "",
+        slug: initialData?.slug || "",
+        type: initialData?.type || "PERSONAL",
+        status: initialData?.status || "DRAFT",
+        start_date: initialData?.start_date,
+        end_date: initialData?.end_date,
+        role: initialData?.role,
+        summary: initialData?.summary,
+        description: initialData?.description,
+        info_url: initialData?.info_url,
+        github_url: initialData?.github_url,
+        thumbnail_image: initialData?.thumbnail_image,
+        tech_stack: initialData?.tech_stack || [],
+        highlights: initialData?.highlights || [],
+    }
 
     const form = useForm<z.infer<typeof projectSchema>>({
         resolver: zodResolver(projectSchema),
-        defaultValues: initialData || {
-            title: "",
-            slug: "",
-            type: "PERSONAL",
-            status: "DRAFT",
-        },
+        defaultValues,
     })
-
-    // Array helpers
-    const [newItem, setNewItem] = useState("")
-    const addHighlight = () => { if (newItem) { setHighlights([...highlights, newItem]); setNewItem("") } }
-
-    const [newTech, setNewTech] = useState("")
-    const addTech = () => { if (newTech) { setTechStack([...techStack, newTech]); setNewTech("") } }
 
     const onSubmit = async (values: z.infer<typeof projectSchema>) => {
         setLoading(true)
         try {
-            const payload = {
-                ...values,
-                highlights,
-                tech_stack: techStack,
-                thumbnail_image: thumbnail,
-                // gallery_images: [], // TODO: Gallery implementation
-            }
+            // Arrays and thumbnail are now part of `values` directly
+            const payload = { ...values }
 
             if (initialData) {
                 const { error } = await supabase.from('projects').update(payload).eq('id', initialData.id)
@@ -170,8 +172,23 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
                 </div>
 
                 <div className="space-y-4">
-                    <Label>Thumbnail</Label>
-                    <ImageUpload value={thumbnail} onChange={setThumbnail} label="Project Thumbnail" />
+                    <FormField
+                        control={form.control}
+                        name="thumbnail_image"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Thumbnail</FormLabel>
+                                <FormControl>
+                                    <ImageUpload
+                                        value={field.value ?? null}
+                                        onChange={field.onChange}
+                                        label="Project Thumbnail"
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
                 </div>
 
                 <FormField
@@ -181,7 +198,7 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
                         <FormItem>
                             <FormLabel>Summary (Card Description)</FormLabel>
                             <FormControl>
-                                <Textarea {...field} />
+                                <Textarea {...field} value={field.value || ""} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -195,49 +212,126 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
                         <FormItem>
                             <FormLabel>Full Description (Markdown)</FormLabel>
                             <FormControl>
-                                <Textarea className="min-h-[200px]" {...field} />
+                                <Textarea className="min-h-[200px]" {...field} value={field.value || ""} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
 
-                {/* Simple Array Inputs for Tech & Highlights */}
+                {/* Tech Stack & Highlights using proper FormField */}
                 <div className="grid md:grid-cols-2 gap-6">
-                    <Card>
-                        <CardContent className="pt-6">
-                            <FormLabel>Tech Stack</FormLabel>
-                            <div className="flex gap-2 my-2">
-                                <Input value={newTech} onChange={e => setNewTech(e.target.value)} placeholder="Add technology..." onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addTech())} />
-                                <Button type="button" size="icon" onClick={addTech}><Plus className="h-4 w-4" /></Button>
-                            </div>
-                            <div className="flex flex-wrap gap-2 mt-2">
-                                {techStack.map((t, i) => (
-                                    <div key={i} className="bg-secondary text-secondary-foreground px-2 py-1 rounded-md text-sm flex items-center gap-1">
-                                        {t} <X className="h-3 w-3 cursor-pointer" onClick={() => setTechStack(techStack.filter((_, idx) => idx !== i))} />
-                                    </div>
-                                ))}
-                            </div>
-                        </CardContent>
-                    </Card>
+                    <FormField
+                        control={form.control}
+                        name="tech_stack"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Tech Stack</FormLabel>
+                                <FormControl>
+                                    <Card>
+                                        <CardContent className="pt-6">
+                                            <div className="flex gap-2 my-2">
+                                                <Input
+                                                    value={newTech}
+                                                    onChange={e => setNewTech(e.target.value)}
+                                                    placeholder="Add technology..."
+                                                    onKeyDown={e => {
+                                                        if (e.key === 'Enter') {
+                                                            e.preventDefault();
+                                                            if (newTech.trim()) {
+                                                                field.onChange([...(field.value || []), newTech.trim()]);
+                                                                setNewTech("");
+                                                            }
+                                                        }
+                                                    }}
+                                                />
+                                                <Button
+                                                    type="button"
+                                                    size="icon"
+                                                    onClick={() => {
+                                                        if (newTech.trim()) {
+                                                            field.onChange([...(field.value || []), newTech.trim()]);
+                                                            setNewTech("");
+                                                        }
+                                                    }}
+                                                >
+                                                    <Plus className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                            <div className="flex flex-wrap gap-2 mt-2">
+                                                {(field.value || []).map((t, i) => (
+                                                    <div key={i} className="bg-secondary text-secondary-foreground px-2 py-1 rounded-md text-sm flex items-center gap-1">
+                                                        {t}
+                                                        <X
+                                                            className="h-3 w-3 cursor-pointer"
+                                                            onClick={() => field.onChange(field.value?.filter((_, idx) => idx !== i))}
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
 
-                    <Card>
-                        <CardContent className="pt-6">
-                            <FormLabel>Highlights</FormLabel>
-                            <div className="flex gap-2 my-2">
-                                <Input value={newItem} onChange={e => setNewItem(e.target.value)} placeholder="Add highlight..." onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addHighlight())} />
-                                <Button type="button" size="icon" onClick={addHighlight}><Plus className="h-4 w-4" /></Button>
-                            </div>
-                            <ul className="list-disc pl-4 mt-2 space-y-1">
-                                {highlights.map((h, i) => (
-                                    <li key={i} className="text-sm flex justify-between items-start group">
-                                        <span>{h}</span>
-                                        <X className="h-3 w-3 cursor-pointer opacity-0 group-hover:opacity-100 ml-2" onClick={() => setHighlights(highlights.filter((_, idx) => idx !== i))} />
-                                    </li>
-                                ))}
-                            </ul>
-                        </CardContent>
-                    </Card>
+                    <FormField
+                        control={form.control}
+                        name="highlights"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Highlights</FormLabel>
+                                <FormControl>
+                                    <Card>
+                                        <CardContent className="pt-6">
+                                            <div className="flex gap-2 my-2">
+                                                <Input
+                                                    value={newItem}
+                                                    onChange={e => setNewItem(e.target.value)}
+                                                    placeholder="Add highlight..."
+                                                    onKeyDown={e => {
+                                                        if (e.key === 'Enter') {
+                                                            e.preventDefault();
+                                                            if (newItem.trim()) {
+                                                                field.onChange([...(field.value || []), newItem.trim()]);
+                                                                setNewItem("");
+                                                            }
+                                                        }
+                                                    }}
+                                                />
+                                                <Button
+                                                    type="button"
+                                                    size="icon"
+                                                    onClick={() => {
+                                                        if (newItem.trim()) {
+                                                            field.onChange([...(field.value || []), newItem.trim()]);
+                                                            setNewItem("");
+                                                        }
+                                                    }}
+                                                >
+                                                    <Plus className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                            <ul className="list-disc pl-4 mt-2 space-y-1">
+                                                {(field.value || []).map((h, i) => (
+                                                    <li key={i} className="text-sm flex justify-between items-start group">
+                                                        <span>{h}</span>
+                                                        <X
+                                                            className="h-3 w-3 cursor-pointer opacity-0 group-hover:opacity-100 ml-2"
+                                                            onClick={() => field.onChange(field.value?.filter((_, idx) => idx !== i))}
+                                                        />
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </CardContent>
+                                    </Card>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
                 </div>
 
                 <Button type="submit" disabled={loading} className="w-full">
