@@ -34,7 +34,7 @@ const projectSchema = z.object({
     title: z.string().min(2, "Title must be at least 2 characters"),
     slug: z.string().min(2, "Slug must be at least 2 characters"),
     type: z.enum(["PERSONAL", "TEAM"]),
-    project_type: z.enum(CATEGORIES),
+    project_category: z.enum(CATEGORIES), // Renamed from project_type
     status: z.enum(["DRAFT", "PUBLISHED"]),
     start_date: z.string().optional().or(z.literal("")),
     end_date: z.string().optional().or(z.literal("")),
@@ -68,14 +68,14 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
         title: initialData?.title || "",
         slug: initialData?.slug || "",
         type: initialData?.type || "PERSONAL",
-        project_type: initialData?.project_type || "Klasifikasi Citra",
+        project_category: initialData?.project_category || "Klasifikasi Citra", // Renamed from project_type
         status: initialData?.status || "DRAFT",
         start_date: initialData?.start_date || "",
         end_date: initialData?.end_date || "",
         role: initialData?.role || "",
         summary: initialData?.summary || "",
         description: initialData?.description || "",
-        demo_url: initialData?.demo_url || (initialData as any)?.info_url || "", // Migration fallback support (info_url might exist on old data)
+        demo_url: initialData?.demo_url || (initialData as any)?.info_url || "",
         github_url: initialData?.github_url || "",
         thumbnail_image: initialData?.thumbnail_image,
         tech_stack: initialData?.tech_stack || [],
@@ -91,13 +91,23 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
         setLoading(true)
         try {
             // Transform empty strings to null for optional fields when sending to Supabase
+            // Also explicitly map project_category
             const payload = {
-                ...values,
-                start_date: values.start_date || null,
-                end_date: values.end_date || null,
+                title: values.title,
+                slug: values.slug,
+                type: values.type,
+                project_category: values.project_category,
+                status: values.status,
                 role: values.role || null,
                 summary: values.summary || null,
                 description: values.description || null,
+                thumbnail_image: values.thumbnail_image || null,
+                tech_stack: values.tech_stack,
+                highlights: values.highlights,
+
+                // Date & URL Normalization (Empty string -> null)
+                start_date: values.start_date || null,
+                end_date: values.end_date || null,
                 demo_url: values.demo_url || null,
                 github_url: values.github_url || null,
             }
@@ -112,9 +122,9 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
 
             router.push("/studio/projects")
             router.refresh()
-        } catch (error) {
-            console.error(error)
-            alert("Error saving project")
+        } catch (error: any) {
+            console.error("Error saving project:", error)
+            alert(`Error saving project: ${error.message || error.toString()}`)
         } finally {
             setLoading(false)
         }
@@ -186,7 +196,7 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
 
                     <FormField
                         control={form.control}
-                        name="project_type"
+                        name="project_category"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Category</FormLabel>

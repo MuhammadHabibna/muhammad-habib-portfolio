@@ -37,12 +37,12 @@ export function Projects({ projects }: ProjectsProps) {
 
     const filteredProjects = projects.filter((p) => {
         const matchesScope = scopeFilter === "ALL" || p.type === scopeFilter
-        const matchesCategory = categoryFilter === "ALL" || (p.project_type && p.project_type === categoryFilter)
+        const matchesCategory = categoryFilter === "ALL" || (p.project_category && p.project_category === categoryFilter)
 
         const isMatch = matchesScope && matchesCategory &&
             (p.title.toLowerCase().includes(search.toLowerCase()) ||
                 p.tech_stack?.some(t => t.toLowerCase().includes(search.toLowerCase())) ||
-                p.project_type?.toLowerCase().includes(search.toLowerCase())
+                p.project_category?.toLowerCase().includes(search.toLowerCase())
             )
 
         return isMatch
@@ -156,9 +156,9 @@ export function Projects({ projects }: ProjectsProps) {
                                                 <CardTitle className="line-clamp-1 text-lg group-hover:text-primary transition-colors">{project.title}</CardTitle>
                                             </div>
                                             <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                                                {project.project_type && (
+                                                {project.project_category && (
                                                     <Badge variant="outline" className="font-normal text-muted-foreground bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
-                                                        {project.project_type}
+                                                        {project.project_category}
                                                     </Badge>
                                                 )}
                                                 {(project.start_date || project.end_date) && (
@@ -233,9 +233,9 @@ export function Projects({ projects }: ProjectsProps) {
 
                         <div className="flex flex-wrap items-center gap-3">
                             <Badge className="text-sm px-3 py-1">{selectedProject.type}</Badge>
-                            {selectedProject.project_type && (
+                            {selectedProject.project_category && (
                                 <Badge variant="outline" className="text-sm px-3 py-1 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
-                                    {selectedProject.project_type}
+                                    {selectedProject.project_category}
                                 </Badge>
                             )}
                             <span className="text-muted-foreground text-sm flex items-center gap-1 border-l pl-3 border-slate-200 dark:border-slate-700">
