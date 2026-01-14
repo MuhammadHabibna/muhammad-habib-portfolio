@@ -145,6 +145,8 @@ export default function ProfilePage() {
                                 value={profile.profile_photo || null}
                                 onChange={(url) => setProfile({ ...profile, profile_photo: url })}
                                 label="Photo"
+                                aspectRatio={1}
+                                outputWidth={512}
                             />
                         </div>
 

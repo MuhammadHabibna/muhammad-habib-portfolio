@@ -191,6 +191,8 @@ export function CertificationForm({ initialData }: CertificationFormProps) {
                                     onChange={field.onChange}
                                     bucket="portfolio"
                                     label="Upload Certificate"
+                                    aspectRatio={4 / 3}
+                                    outputWidth={1600}
                                 />
                             </FormControl>
                             <FormMessage />

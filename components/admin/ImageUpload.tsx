@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Upload, X, Loader2, Image as ImageIcon } from "lucide-react"
+import { ImageCropDialog } from "@/components/admin/ImageCropDialog"
 
 interface ImageUploadProps {
     value: string | null
@@ -14,24 +15,51 @@ interface ImageUploadProps {
     label?: string
 }
 
-export function ImageUpload({ value, onChange, bucket = "portfolio", label = "Image" }: ImageUploadProps) {
+export function ImageUpload({
+    value,
+    onChange,
+    bucket = "portfolio",
+    label = "Image",
+    aspectRatio = 1,
+    outputWidth,
+    outputFormat = "image/webp"
+}: ImageUploadProps & {
+    aspectRatio?: number
+    outputWidth?: number
+    outputFormat?: "image/jpeg" | "image/webp" | "image/png"
+}) {
     const [uploading, setUploading] = useState(false)
+    const [imageSrc, setImageSrc] = useState<string | null>(null)
+    const [cropOpen, setCropOpen] = useState(false)
     const supabase = createClient()
 
-    const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            const file = e.target.files[0]
+            const reader = new FileReader()
+            reader.addEventListener('load', () => {
+                setImageSrc(reader.result?.toString() || null)
+                setCropOpen(true)
+            })
+            reader.readAsDataURL(file)
+            // Reset input value so same file can be selected again if cancelled
+            e.target.value = ''
+        }
+    }
+
+    const handleUpload = async (file: Blob) => {
         try {
             setUploading(true)
 
-            const file = e.target.files?.[0]
-            if (!file) return
-
-            const fileExt = file.name.split('.').pop()
+            const fileExt = outputFormat.split('/')[1]
             const fileName = `${Math.random()}.${fileExt}`
             const filePath = `${fileName}`
 
             const { error: uploadError } = await supabase.storage
                 .from(bucket)
-                .upload(filePath, file)
+                .upload(filePath, file, {
+                    contentType: outputFormat
+                })
 
             if (uploadError) {
                 throw uploadError
@@ -75,7 +103,7 @@ export function ImageUpload({ value, onChange, bucket = "portfolio", label = "Im
                         <Input
                             type="file"
                             accept="image/*"
-                            onChange={handleUpload}
+                            onChange={handleFileSelect}
                             className="hidden"
                             id={`upload-${label}`}
                             disabled={uploading}
@@ -92,6 +120,16 @@ export function ImageUpload({ value, onChange, bucket = "portfolio", label = "Im
                     </p>
                 </div>
             </div>
+
+            <ImageCropDialog
+                open={cropOpen}
+                onOpenChange={setCropOpen}
+                imageSrc={imageSrc}
+                aspectRatio={aspectRatio}
+                onCropComplete={handleUpload}
+                outputWidth={outputWidth}
+                outputFormat={outputFormat}
+            />
         </div>
     )
 }

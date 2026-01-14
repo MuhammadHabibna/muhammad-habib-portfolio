@@ -202,6 +202,8 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
                                         value={field.value ?? null}
                                         onChange={field.onChange}
                                         label="Project Thumbnail"
+                                        aspectRatio={16 / 9}
+                                        outputWidth={1280}
                                     />
                                 </FormControl>
                                 <FormMessage />
