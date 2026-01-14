@@ -8,6 +8,10 @@ import { LayoutDashboard, FolderKanban, Award, Building2, Brain, User, LogOut } 
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname()
     const router = useRouter()
