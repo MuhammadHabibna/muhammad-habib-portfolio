@@ -6,6 +6,7 @@ export interface Project {
     title: string
     slug: string
     type: ProjectType
+    project_type: string
     status: ContentStatus
     start_date: string | null
     end_date: string | null

@@ -18,7 +18,8 @@ import { Loader2, X, Plus } from "lucide-react"
 const projectSchema = z.object({
     title: z.string().min(2),
     slug: z.string().min(2),
-    type: z.enum([
+    type: z.enum(["PERSONAL", "TEAM"]).default("PERSONAL"),
+    project_type: z.enum([
         "Klasifikasi Citra",
         "Object Detection",
         "Segmentasi Citra",
@@ -31,12 +32,12 @@ const projectSchema = z.object({
         "Klasifikasi Teks"
     ]),
     status: z.enum(["DRAFT", "PUBLISHED"]),
-    start_date: z.string().optional(),
-    end_date: z.string().optional(),
+    start_date: z.string().optional().or(z.literal("")),
+    end_date: z.string().optional().or(z.literal("")),
     role: z.string().optional(),
     summary: z.string().optional(),
     description: z.string().optional(),
-    info_url: z.string().url().optional().or(z.literal("")),
+    demo_url: z.string().url().optional().or(z.literal("")),
     github_url: z.string().url().optional().or(z.literal("")),
     thumbnail_image: z.string().optional().nullable(),
     tech_stack: z.array(z.string()),
@@ -52,21 +53,22 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
     const supabase = createClient()
     const [loading, setLoading] = useState(false)
 
-    // Local state for array inputs to handle the input field value before adding to the form array
+    // Local state for array inputs
     const [newTech, setNewTech] = useState("")
     const [newItem, setNewItem] = useState("")
 
     const defaultValues: Partial<z.infer<typeof projectSchema>> = {
         title: initialData?.title || "",
         slug: initialData?.slug || "",
-        type: initialData?.type || "Klasifikasi Citra",
+        type: initialData?.type || "PERSONAL", // Default to PERSONAL
+        project_type: initialData?.project_type || "Klasifikasi Citra",
         status: initialData?.status || "DRAFT",
-        start_date: initialData?.start_date,
-        end_date: initialData?.end_date,
+        start_date: initialData?.start_date || "",
+        end_date: initialData?.end_date || "",
         role: initialData?.role,
         summary: initialData?.summary,
         description: initialData?.description,
-        info_url: initialData?.info_url,
+        demo_url: initialData?.demo_url || initialData?.info_url || "", // Migration fallback
         github_url: initialData?.github_url,
         thumbnail_image: initialData?.thumbnail_image,
         tech_stack: initialData?.tech_stack || [],
@@ -81,8 +83,12 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
     const onSubmit = async (values: z.infer<typeof projectSchema>) => {
         setLoading(true)
         try {
-            // Arrays and thumbnail are now part of `values` directly
-            const payload = { ...values }
+            // Handle empty strings for dates to be null (Supabase date handling)
+            const payload = {
+                ...values,
+                start_date: values.start_date || null,
+                end_date: values.end_date || null,
+            }
 
             if (initialData) {
                 const { error } = await supabase.from('projects').update(payload).eq('id', initialData.id)
@@ -134,20 +140,44 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
                                 <FormControl>
                                     <Input placeholder="project-slug" {...field} />
                                 </FormControl>
+                                <p className="text-[0.8rem] text-muted-foreground">Used in project URL: /projects/{'{'}slug{'}'}. Auto-generated from Title. Must be unique.</p>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
+
                     <FormField
                         control={form.control}
                         name="type"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Type / Category</FormLabel>
+                                <FormLabel>Scope (Type)</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                     <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select type" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="PERSONAL">Personal</SelectItem>
+                                        <SelectItem value="TEAM">Team</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="project_type"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Category</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select category" />
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
@@ -167,6 +197,36 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
                             </FormItem>
                         )}
                     />
+
+                    <FormField
+                        control={form.control}
+                        name="start_date"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Start Date</FormLabel>
+                                <FormControl>
+                                    <Input type="date" {...field} value={field.value || ""} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="end_date"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>End Date</FormLabel>
+                                <FormControl>
+                                    <Input type="date" {...field} value={field.value || ""} />
+                                </FormControl>
+                                <p className="text-[0.8rem] text-muted-foreground">Leave empty if present/ongoing.</p>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
                     <FormField
                         control={form.control}
                         name="status"
@@ -188,6 +248,38 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
                             </FormItem>
                         )}
                     />
+                </div>
+
+                <div className="space-y-4">
+                    <h3 className="text-lg font-medium">Links</h3>
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <FormField
+                            control={form.control}
+                            name="github_url"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>GitHub Repo URL</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="https://github.com/..." {...field} value={field.value || ""} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="demo_url"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Live Demo URL</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="https://..." {...field} value={field.value || ""} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
                 </div>
 
                 <div className="space-y-4">
@@ -349,6 +441,7 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
                                         </CardContent>
                                     </Card>
                                 </FormControl>
+                                <p className="text-[0.8rem] text-muted-foreground mt-2">Bullet points for key results/impact. Short, punchy, 3–8 items recommended.</p>
                                 <FormMessage />
                             </FormItem>
                         )}
