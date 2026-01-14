@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { LayoutDashboard, FolderKanban, Award, Building2, Brain, User, LogOut } from "lucide-react"
+import { LayoutDashboard, FolderKanban, Award, Building2, Brain, User, LogOut, Trophy } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 
@@ -27,9 +27,10 @@ export function AdminSidebar({ children }: { children: React.ReactNode }) {
         { name: "Dashboard", href: "/studio", icon: LayoutDashboard },
         { name: "Profile", href: "/studio/profile", icon: User },
         { name: "Projects", href: "/studio/projects", icon: FolderKanban },
+        { name: "Achievements", href: "/studio/achievements", icon: Trophy },
         { name: "Certifications", href: "/studio/certifications", icon: Award },
         { name: "Experience", href: "/studio/experience", icon: Building2 },
-        { name: "Skills", href: "/studio/skills", icon: Brain },
+        // { name: "Skills", href: "/studio/skills", icon: Brain },
     ]
 
     return (

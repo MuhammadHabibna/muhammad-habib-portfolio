@@ -46,7 +46,23 @@ export interface Certification {
     credential_id: string | null
     verify_url: string | null
     certificate_image: string | null
+    linkedin_url: string | null
     status: ContentStatus
+    created_at: string
+}
+
+export interface Achievement {
+    id: string
+    title: string
+    event: string
+    award: string
+    level: string
+    year: number
+    date: string | null
+    description: string
+    proof_url: string | null
+    status: ContentStatus
+    sort_order: number
     created_at: string
 }
 

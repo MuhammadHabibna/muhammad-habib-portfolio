@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ImageUpload } from "@/components/admin/ImageUpload"
 import { Loader2 } from "lucide-react"
 
 const certificationSchema = z.object({
@@ -20,7 +19,8 @@ const certificationSchema = z.object({
     expiry_date: z.string().optional(),
     credential_id: z.string().optional(),
     verify_url: z.string().url().optional().or(z.literal("")),
-    certificate_image: z.string().optional().nullable(),
+    linkedin_url: z.string().url("Invalid LinkedIn URL").optional().or(z.literal("")),
+    // certificate_image: z.string().optional().nullable(), // Removed
     status: z.enum(["DRAFT", "PUBLISHED"]),
 })
 
@@ -40,7 +40,7 @@ export function CertificationForm({ initialData }: CertificationFormProps) {
         expiry_date: initialData?.expiry_date,
         credential_id: initialData?.credential_id,
         verify_url: initialData?.verify_url,
-        certificate_image: initialData?.certificate_image,
+        linkedin_url: initialData?.linkedin_url,
         status: initialData?.status || "DRAFT",
     }
 
@@ -159,6 +159,20 @@ export function CertificationForm({ initialData }: CertificationFormProps) {
 
                 <FormField
                     control={form.control}
+                    name="linkedin_url"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>LinkedIn URL</FormLabel>
+                            <FormControl>
+                                <Input placeholder="https://www.linkedin.com/learning/..." {...field} value={field.value || ""} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
                     name="status"
                     render={({ field }) => (
                         <FormItem>
@@ -174,27 +188,6 @@ export function CertificationForm({ initialData }: CertificationFormProps) {
                                     <SelectItem value="PUBLISHED">Published</SelectItem>
                                 </SelectContent>
                             </Select>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name="certificate_image"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Certificate Image</FormLabel>
-                            <FormControl>
-                                <ImageUpload
-                                    value={field.value || null}
-                                    onChange={field.onChange}
-                                    bucket="portfolio"
-                                    label="Upload Certificate"
-                                    aspectRatio={4 / 3}
-                                    outputWidth={1600}
-                                />
-                            </FormControl>
                             <FormMessage />
                         </FormItem>
                     )}
