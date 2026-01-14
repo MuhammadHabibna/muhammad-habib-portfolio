@@ -1,24 +1,27 @@
--- Add project_category column to projects table
-ALTER TABLE public.projects 
-ADD COLUMN IF NOT EXISTS project_category text;
+-- 1. Create the new ENUM for Scope (Personal/Team)
+DO $$ BEGIN
+    CREATE TYPE project_owner_type AS ENUM ('PERSONAL', 'TEAM');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
--- Add check constraint to restrict values
+-- 2. Add the new 'project_category' column using the EXISTING 'project_type' ENUM
+-- We assume 'project_type' enum already exists and contains the ML categories (Klasifikasi Citra, etc.)
 ALTER TABLE public.projects 
-ADD CONSTRAINT check_project_category 
-CHECK (project_category IN (
-    'Klasifikasi Citra',
-    'Object Detection',
-    'Segmentasi Citra',
-    'Object Character Recognition',
-    'Clustering (Tabular)',
-    'Klasifikasi (Tabular)',
-    'Regresi (Tabular)',
-    'Forecasting (Tabular)',
-    'Analisis Sentiment',
-    'Klasifikasi Teks'
-));
+ADD COLUMN IF NOT EXISTS project_category project_type;
 
--- Optional: Migrate existing data if needed (e.g., if you were storing category in 'type' previously and want to move it)
--- UPDATE public.projects SET project_category = type WHERE type IN (...);
--- However, given 'type' is supposed to be PERSONAL/TEAM, we assume category data might be missing or mixed.
--- We will leave it nullable for now or you can set a default.
+-- 3. Migrate existing data: Since 'type' currently holds the ML category, copy it to 'project_category'
+UPDATE public.projects 
+SET project_category = type::text::project_type 
+WHERE type IS NOT NULL;
+
+-- 4. Now alter the 'type' column to be the new 'project_owner_type' (Scope)
+-- We cannot automatically determine PERSONAL vs TEAM from the ML category, so we default to 'PERSONAL'
+-- We must drop the default first if strictly casting, or just use USING clause.
+ALTER TABLE public.projects 
+  ALTER COLUMN type DROP DEFAULT,
+  ALTER COLUMN type TYPE project_owner_type USING 'PERSONAL'::project_owner_type,
+  ALTER COLUMN type SET DEFAULT 'PERSONAL';
+
+-- 5. Optional: Ensure project_category is not null if required
+-- ALTER TABLE public.projects ALTER COLUMN project_category SET NOT NULL;
