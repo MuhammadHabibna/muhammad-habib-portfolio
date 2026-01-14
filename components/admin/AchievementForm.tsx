@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { ImageUpload } from "@/components/ui/ImageUpload"
 import { Loader2 } from "lucide-react"
 
 const achievementSchema = z.object({
@@ -22,6 +23,8 @@ const achievementSchema = z.object({
     date: z.string().optional().or(z.literal("")),
     description: z.string().optional(),
     proof_url: z.string().url().optional().or(z.literal("")),
+    proof_image_url: z.string().url().optional().or(z.literal("")),
+    proof_image_caption: z.string().optional(),
     status: z.enum(["DRAFT", "PUBLISHED"]).default("PUBLISHED"),
     sort_order: z.coerce.number().int().min(0).default(0),
 })
@@ -37,7 +40,7 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
     const supabase = createClient()
     const [loading, setLoading] = useState(false)
 
-    const defaultValues: AchievementFormValues = {
+    const defaultValues: Partial<AchievementFormValues> = {
         title: initialData?.title || "",
         event: initialData?.event || "",
         award: initialData?.award || "",
@@ -46,12 +49,14 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
         date: initialData?.date || "",
         description: initialData?.description || "",
         proof_url: initialData?.proof_url || "",
-        status: (initialData?.status as "DRAFT" | "PUBLISHED") || "PUBLISHED",
+        proof_image_url: initialData?.proof_image_url || "",
+        proof_image_caption: initialData?.proof_image_caption || "",
+        status: initialData?.status || "PUBLISHED",
         sort_order: initialData?.sort_order || 0,
     }
 
     const form = useForm<AchievementFormValues>({
-        // Cast resolver to any to avoid TS mismatch between z.input (unknown) and z.infer (number) for coerced fields
+        // Cast resolver to any to avoid TS mismatch
         resolver: zodResolver(achievementSchema) as any,
         defaultValues,
     })
@@ -59,17 +64,20 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
     const onSubmit = async (values: AchievementFormValues) => {
         setLoading(true)
         try {
-            const payload = {
+            const formattedValues = {
                 ...values,
                 date: values.date || null,
                 proof_url: values.proof_url || null,
+                proof_image_url: values.proof_image_url || null,
+                year: Number(values.year),
+                sort_order: Number(values.sort_order)
             }
 
             if (initialData) {
-                const { error } = await supabase.from('achievements').update(payload).eq('id', initialData.id)
+                const { error } = await supabase.from('achievements').update(formattedValues).eq('id', initialData.id)
                 if (error) throw error
             } else {
-                const { error } = await supabase.from('achievements').insert([payload])
+                const { error } = await supabase.from('achievements').insert([formattedValues])
                 if (error) throw error
             }
 
@@ -91,9 +99,9 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
                     name="title"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Title / Achievement Name</FormLabel>
+                            <FormLabel>Achievement Title</FormLabel>
                             <FormControl>
-                                <Input placeholder="Finalist GEMASTIK 2025 – Data Mining" {...field} />
+                                <Input placeholder="1st Winner Hackathon 2024" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -108,7 +116,7 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
                             <FormItem>
                                 <FormLabel>Event / Organizer</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="GEMASTIK / Google" {...field} value={field.value || ""} />
+                                    <Input placeholder="TechInAsia" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -119,9 +127,9 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
                         name="award"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Award Label</FormLabel>
+                                <FormLabel>Award / Rank (Optional)</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Finalist, Winner, 1st Place" {...field} value={field.value || ""} />
+                                    <Input placeholder="Winner / Finalist" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -135,9 +143,9 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
                         name="level"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Level</FormLabel>
+                                <FormLabel>Level (Optional)</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="National, International" {...field} value={field.value || ""} />
+                                    <Input placeholder="National / International" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -163,7 +171,7 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
                             <FormItem>
                                 <FormLabel>Exact Date (Optional)</FormLabel>
                                 <FormControl>
-                                    <Input type="date" {...field} value={field.value || ""} />
+                                    <Input type="date" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -178,7 +186,54 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
                         <FormItem>
                             <FormLabel>Description</FormLabel>
                             <FormControl>
-                                <Textarea placeholder="Brief details about the achievement..." {...field} value={field.value || ""} />
+                                <Textarea placeholder="Describe your achievement..." className="h-32" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="proof_image_url"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Proof Image (Certificate/Photo)</FormLabel>
+                            <FormControl>
+                                <ImageUpload
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    folderPath="achievements"
+                                    aspectRatio={4 / 3}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="proof_image_caption"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Image Caption (Optional)</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Receiving the award at stage..." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="proof_url"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>External Proof URL (Optional)</FormLabel>
+                            <FormControl>
+                                <Input placeholder="https://..." {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -186,20 +241,6 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
                 />
 
                 <div className="grid md:grid-cols-2 gap-6">
-                    <FormField
-                        control={form.control}
-                        name="proof_url"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Proof URL (Optional)</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="https://..." {...field} value={field.value || ""} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
                     <FormField
                         control={form.control}
                         name="status"
@@ -222,20 +263,6 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
                         )}
                     />
                 </div>
-
-                <FormField
-                    control={form.control}
-                    name="sort_order"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Sort Order</FormLabel>
-                            <FormControl>
-                                <Input type="number" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
 
                 <Button type="submit" disabled={loading} className="w-full">
                     {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

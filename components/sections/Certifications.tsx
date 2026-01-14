@@ -116,9 +116,23 @@ export function Certifications({ certifications }: CertificationsProps) {
 
                                     <CardContent className="p-6 pt-4 space-y-4 relative z-10">
                                         <div>
-                                            <h3 className="font-bold text-lg leading-tight group-hover:text-primary transition-colors mb-2">
-                                                {cert.name}
-                                            </h3>
+                                            <div className="mb-2">
+                                                {cert.credential_url ? (
+                                                    <a
+                                                        href={cert.credential_url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="font-bold text-lg leading-tight group-hover:text-primary transition-colors inline-flex items-center gap-2 hover:underline decoration-sky-500/30 underline-offset-4"
+                                                    >
+                                                        {cert.name}
+                                                        <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-sky-500 transition-colors" />
+                                                    </a>
+                                                ) : (
+                                                    <h3 className="font-bold text-lg leading-tight group-hover:text-primary transition-colors">
+                                                        {cert.name}
+                                                    </h3>
+                                                )}
+                                            </div>
                                             <div className="flex items-center text-sm text-muted-foreground gap-2">
                                                 <Calendar className="w-3 h-3" />
                                                 <span>Issued {cert.issue_date ? new Date(cert.issue_date).toLocaleDateString(undefined, { month: 'short', year: 'numeric' }) : 'N/A'}</span>
@@ -131,19 +145,11 @@ export function Certifications({ certifications }: CertificationsProps) {
                                                 Verified
                                             </div>
 
-                                            {cert.linkedin_url ? (
-                                                <Button size="sm" variant="ghost" className="h-8 gap-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20" asChild>
-                                                    <a href={cert.linkedin_url} target="_blank" rel="noopener noreferrer">
-                                                        <Linkedin className="w-3.5 h-3.5" /> Credential
-                                                    </a>
-                                                </Button>
-                                            ) : cert.verify_url ? (
-                                                <Button size="sm" variant="ghost" className="h-8 gap-2" asChild>
-                                                    <a href={cert.verify_url} target="_blank" rel="noopener noreferrer">
-                                                        <ExternalLink className="w-3.5 h-3.5" /> Verify
-                                                    </a>
-                                                </Button>
-                                            ) : null}
+                                            {cert.credential_id && (
+                                                <span className="text-xs text-muted-foreground font-mono bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
+                                                    ID: {cert.credential_id}
+                                                </span>
+                                            )}
                                         </div>
                                     </CardContent>
                                 </Card>

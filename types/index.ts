@@ -44,9 +44,8 @@ export interface Certification {
     issue_date: string | null
     expiry_date: string | null
     credential_id: string | null
-    verify_url: string | null
+    credential_url: string | null // Standardized from verify_url/linkedin_url
     certificate_image: string | null
-    linkedin_url: string | null
     status: ContentStatus
     created_at: string
 }
@@ -61,6 +60,8 @@ export interface Achievement {
     date: string | null
     description: string
     proof_url: string | null
+    proof_image_url: string | null
+    proof_image_caption: string | null
     status: ContentStatus
     sort_order: number
     created_at: string

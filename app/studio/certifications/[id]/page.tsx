@@ -5,9 +5,10 @@ import { createClient } from "@/lib/supabase/server"
 import { notFound } from "next/navigation"
 import { CertificationForm } from "@/components/admin/CertificationForm"
 
-export default async function EditCertificationPage({ params }: { params: { id: string } }) {
+export default async function EditCertificationPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params
     const supabase = await createClient()
-    const { data: certification } = await supabase.from('certifications').select('*').eq('id', params.id).single()
+    const { data: certification } = await supabase.from('certifications').select('*').eq('id', id).single()
 
     if (!certification) {
         notFound()

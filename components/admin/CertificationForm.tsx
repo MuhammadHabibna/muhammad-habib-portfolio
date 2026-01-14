@@ -18,9 +18,7 @@ const certificationSchema = z.object({
     issue_date: z.string().optional(),
     expiry_date: z.string().optional(),
     credential_id: z.string().optional(),
-    verify_url: z.string().url().optional().or(z.literal("")),
-    linkedin_url: z.string().url("Invalid LinkedIn URL").optional().or(z.literal("")),
-    // certificate_image: z.string().optional().nullable(), // Removed
+    credential_url: z.string().url().optional().or(z.literal("")),
     status: z.enum(["DRAFT", "PUBLISHED"]),
 })
 
@@ -39,8 +37,7 @@ export function CertificationForm({ initialData }: CertificationFormProps) {
         issue_date: initialData?.issue_date,
         expiry_date: initialData?.expiry_date,
         credential_id: initialData?.credential_id,
-        verify_url: initialData?.verify_url,
-        linkedin_url: initialData?.linkedin_url,
+        credential_url: initialData?.credential_url || initialData?.verify_url || initialData?.linkedin_url,
         status: initialData?.status || "DRAFT",
     }
 
@@ -144,10 +141,10 @@ export function CertificationForm({ initialData }: CertificationFormProps) {
                     />
                     <FormField
                         control={form.control}
-                        name="verify_url"
+                        name="credential_url"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Verification URL</FormLabel>
+                                <FormLabel>Credential URL (Verification / LinkedIn)</FormLabel>
                                 <FormControl>
                                     <Input placeholder="https://..." {...field} value={field.value || ""} />
                                 </FormControl>
@@ -156,20 +153,6 @@ export function CertificationForm({ initialData }: CertificationFormProps) {
                         )}
                     />
                 </div>
-
-                <FormField
-                    control={form.control}
-                    name="linkedin_url"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>LinkedIn URL</FormLabel>
-                            <FormControl>
-                                <Input placeholder="https://www.linkedin.com/learning/..." {...field} value={field.value || ""} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
 
                 <FormField
                     control={form.control}

@@ -99,9 +99,8 @@ export const DUMMY_CERTS: Certification[] = [
         issue_date: "2023-04-15",
         expiry_date: "2026-04-15",
         credential_id: "AWS-123456",
-        verify_url: "https://aws.amazon.com/verification",
+        credential_url: "https://aws.amazon.com/verification",
         certificate_image: null,
-        linkedin_url: null,
         status: "PUBLISHED",
         created_at: new Date().toISOString()
     },
@@ -109,12 +108,11 @@ export const DUMMY_CERTS: Certification[] = [
         id: "2",
         name: "Google Data Analytics Professional Certificate",
         issuer: "Google",
-        issue_date: "2023-01-15",
+        issue_date: "2023-11-20",
         expiry_date: null,
-        credential_id: "G-DATA-789",
-        verify_url: "https://coursera.org/verify/google",
+        credential_id: "GDAPC-789012",
+        credential_url: "https://coursera.org/verify/google",
         certificate_image: null,
-        linkedin_url: null,
         status: "PUBLISHED",
         created_at: new Date().toISOString()
     }
