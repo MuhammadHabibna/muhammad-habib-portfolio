@@ -1,7 +1,11 @@
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+"use client";
 
-import { ProjectForm } from "@/components/admin/ProjectForm"
+import dynamic from 'next/dynamic'
+
+const ProjectForm = dynamic(() => import('@/components/admin/ProjectForm').then(mod => mod.ProjectForm), {
+    ssr: false,
+    loading: () => <p>Loading Form...</p>
+})
 
 export default function NewProjectPage() {
     return (
