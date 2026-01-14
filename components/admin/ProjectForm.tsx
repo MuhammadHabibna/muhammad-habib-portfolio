@@ -14,38 +14,44 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ImageUpload } from "@/components/admin/ImageUpload"
 import { Card, CardContent } from "@/components/ui/card"
 import { Loader2, X, Plus } from "lucide-react"
+import { Project } from "@/types"
+
+// Defines the categories strictly to match the ProjectCategory type
+const CATEGORIES = [
+    "Klasifikasi Citra",
+    "Object Detection",
+    "Segmentasi Citra",
+    "Object Character Recognition",
+    "Clustering (Tabular)",
+    "Klasifikasi (Tabular)",
+    "Regresi (Tabular)",
+    "Forecasting (Tabular)",
+    "Analisis Sentiment",
+    "Klasifikasi Teks"
+] as const
 
 const projectSchema = z.object({
-    title: z.string().min(2),
-    slug: z.string().min(2),
-    type: z.enum(["PERSONAL", "TEAM"]).default("PERSONAL"),
-    project_type: z.enum([
-        "Klasifikasi Citra",
-        "Object Detection",
-        "Segmentasi Citra",
-        "Object Character Recognition",
-        "Clustering (Tabular)",
-        "Klasifikasi (Tabular)",
-        "Regresi (Tabular)",
-        "Forecasting (Tabular)",
-        "Analisis Sentiment",
-        "Klasifikasi Teks"
-    ]),
+    title: z.string().min(2, "Title must be at least 2 characters"),
+    slug: z.string().min(2, "Slug must be at least 2 characters"),
+    type: z.enum(["PERSONAL", "TEAM"]),
+    project_type: z.enum(CATEGORIES),
     status: z.enum(["DRAFT", "PUBLISHED"]),
     start_date: z.string().optional().or(z.literal("")),
     end_date: z.string().optional().or(z.literal("")),
     role: z.string().optional(),
     summary: z.string().optional(),
     description: z.string().optional(),
-    demo_url: z.string().url().optional().or(z.literal("")),
-    github_url: z.string().url().optional().or(z.literal("")),
+    demo_url: z.string().url("Invalid URL").optional().or(z.literal("")),
+    github_url: z.string().url("Invalid URL").optional().or(z.literal("")),
     thumbnail_image: z.string().optional().nullable(),
     tech_stack: z.array(z.string()),
     highlights: z.array(z.string()),
 })
 
+type ProjectFormValues = z.infer<typeof projectSchema>
+
 interface ProjectFormProps {
-    initialData?: any
+    initialData?: Project | null
 }
 
 export function ProjectForm({ initialData }: ProjectFormProps) {
@@ -57,37 +63,43 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
     const [newTech, setNewTech] = useState("")
     const [newItem, setNewItem] = useState("")
 
-    const defaultValues: Partial<z.infer<typeof projectSchema>> = {
+    // Robust default values handling
+    const defaultValues: Partial<ProjectFormValues> = {
         title: initialData?.title || "",
         slug: initialData?.slug || "",
-        type: initialData?.type || "PERSONAL", // Default to PERSONAL
+        type: initialData?.type || "PERSONAL",
         project_type: initialData?.project_type || "Klasifikasi Citra",
         status: initialData?.status || "DRAFT",
         start_date: initialData?.start_date || "",
         end_date: initialData?.end_date || "",
-        role: initialData?.role,
-        summary: initialData?.summary,
-        description: initialData?.description,
-        demo_url: initialData?.demo_url || initialData?.info_url || "", // Migration fallback
-        github_url: initialData?.github_url,
+        role: initialData?.role || "",
+        summary: initialData?.summary || "",
+        description: initialData?.description || "",
+        demo_url: initialData?.demo_url || (initialData as any)?.info_url || "", // Migration fallback support (info_url might exist on old data)
+        github_url: initialData?.github_url || "",
         thumbnail_image: initialData?.thumbnail_image,
         tech_stack: initialData?.tech_stack || [],
         highlights: initialData?.highlights || [],
     }
 
-    const form = useForm<z.infer<typeof projectSchema>>({
+    const form = useForm<ProjectFormValues>({
         resolver: zodResolver(projectSchema),
         defaultValues,
     })
 
-    const onSubmit = async (values: z.infer<typeof projectSchema>) => {
+    const onSubmit = async (values: ProjectFormValues) => {
         setLoading(true)
         try {
-            // Handle empty strings for dates to be null (Supabase date handling)
+            // Transform empty strings to null for optional fields when sending to Supabase
             const payload = {
                 ...values,
                 start_date: values.start_date || null,
                 end_date: values.end_date || null,
+                role: values.role || null,
+                summary: values.summary || null,
+                description: values.description || null,
+                demo_url: values.demo_url || null,
+                github_url: values.github_url || null,
             }
 
             if (initialData) {
@@ -121,9 +133,13 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
                                 <FormControl>
                                     <Input placeholder="Project Name" {...field} onChange={e => {
                                         field.onChange(e);
-                                        // Auto-slug
+                                        // Auto-slug generation
                                         if (!initialData) {
-                                            form.setValue("slug", e.target.value.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''))
+                                            const slug = e.target.value
+                                                .toLowerCase()
+                                                .replace(/ /g, '-')
+                                                .replace(/[^\w-]+/g, '')
+                                            form.setValue("slug", slug)
                                         }
                                     }} />
                                 </FormControl>
@@ -140,7 +156,7 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
                                 <FormControl>
                                     <Input placeholder="project-slug" {...field} />
                                 </FormControl>
-                                <p className="text-[0.8rem] text-muted-foreground">Used in project URL: /projects/{'{'}slug{'}'}. Auto-generated from Title. Must be unique.</p>
+                                <p className="text-[0.8rem] text-muted-foreground">Used in URL. Auto-generated. Must be unique.</p>
                                 <FormMessage />
                             </FormItem>
                         )}
@@ -181,16 +197,11 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        <SelectItem value="Klasifikasi Citra">Klasifikasi Citra</SelectItem>
-                                        <SelectItem value="Object Detection">Object Detection</SelectItem>
-                                        <SelectItem value="Segmentasi Citra">Segmentasi Citra</SelectItem>
-                                        <SelectItem value="Object Character Recognition">OCR</SelectItem>
-                                        <SelectItem value="Clustering (Tabular)">Clustering (Tabular)</SelectItem>
-                                        <SelectItem value="Klasifikasi (Tabular)">Klasifikasi (Tabular)</SelectItem>
-                                        <SelectItem value="Regresi (Tabular)">Regresi (Tabular)</SelectItem>
-                                        <SelectItem value="Forecasting (Tabular)">Forecasting (Tabular)</SelectItem>
-                                        <SelectItem value="Analisis Sentiment">Analisis Sentiment</SelectItem>
-                                        <SelectItem value="Klasifikasi Teks">Klasifikasi Teks</SelectItem>
+                                        {CATEGORIES.map(category => (
+                                            <SelectItem key={category} value={category}>
+                                                {category}
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                                 <FormMessage />
@@ -332,7 +343,6 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
                     )}
                 />
 
-                {/* Tech Stack & Highlights using proper FormField */}
                 <div className="grid md:grid-cols-2 gap-6">
                     <FormField
                         control={form.control}
@@ -347,7 +357,7 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
                                                 <Input
                                                     value={newTech}
                                                     onChange={e => setNewTech(e.target.value)}
-                                                    placeholder="Add technology..."
+                                                    placeholder="Add..."
                                                     onKeyDown={e => {
                                                         if (e.key === 'Enter') {
                                                             e.preventDefault();
@@ -403,7 +413,7 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
                                                 <Input
                                                     value={newItem}
                                                     onChange={e => setNewItem(e.target.value)}
-                                                    placeholder="Add highlight..."
+                                                    placeholder="Add..."
                                                     onKeyDown={e => {
                                                         if (e.key === 'Enter') {
                                                             e.preventDefault();

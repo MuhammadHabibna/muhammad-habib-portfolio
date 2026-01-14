@@ -1,4 +1,16 @@
 export type ProjectType = 'PERSONAL' | 'TEAM'
+export type ProjectCategory =
+    | "Klasifikasi Citra"
+    | "Object Detection"
+    | "Segmentasi Citra"
+    | "Object Character Recognition"
+    | "Clustering (Tabular)"
+    | "Klasifikasi (Tabular)"
+    | "Regresi (Tabular)"
+    | "Forecasting (Tabular)"
+    | "Analisis Sentiment"
+    | "Klasifikasi Teks"
+
 export type ContentStatus = 'DRAFT' | 'PUBLISHED'
 
 export interface Project {
@@ -6,7 +18,7 @@ export interface Project {
     title: string
     slug: string
     type: ProjectType
-    project_type: string
+    project_type: ProjectCategory
     status: ContentStatus
     start_date: string | null
     end_date: string | null
