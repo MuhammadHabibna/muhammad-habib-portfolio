@@ -18,13 +18,15 @@ const achievementSchema = z.object({
     event: z.string().optional(),
     award: z.string().optional(),
     level: z.string().optional(),
-    year: z.coerce.number().min(2000, "Year must be valid"),
+    year: z.coerce.number().int().min(1900).max(2100),
     date: z.string().optional().or(z.literal("")),
     description: z.string().optional(),
     proof_url: z.string().url().optional().or(z.literal("")),
-    status: z.string().default("PUBLISHED"),
-    sort_order: z.coerce.number().default(0),
+    status: z.enum(["DRAFT", "PUBLISHED"]).default("PUBLISHED"),
+    sort_order: z.coerce.number().int().min(0).default(0),
 })
+
+type AchievementFormValues = z.infer<typeof achievementSchema>
 
 interface AchievementFormProps {
     initialData?: any
@@ -35,7 +37,7 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
     const supabase = createClient()
     const [loading, setLoading] = useState(false)
 
-    const defaultValues: Partial<z.infer<typeof achievementSchema>> = {
+    const defaultValues: AchievementFormValues = {
         title: initialData?.title || "",
         event: initialData?.event || "",
         award: initialData?.award || "",
@@ -44,16 +46,17 @@ export function AchievementForm({ initialData }: AchievementFormProps) {
         date: initialData?.date || "",
         description: initialData?.description || "",
         proof_url: initialData?.proof_url || "",
-        status: initialData?.status || "PUBLISHED",
+        status: (initialData?.status as "DRAFT" | "PUBLISHED") || "PUBLISHED",
         sort_order: initialData?.sort_order || 0,
     }
 
-    const form = useForm<z.infer<typeof achievementSchema>>({
-        resolver: zodResolver(achievementSchema),
+    const form = useForm<AchievementFormValues>({
+        // Cast resolver to any to avoid TS mismatch between z.input (unknown) and z.infer (number) for coerced fields
+        resolver: zodResolver(achievementSchema) as any,
         defaultValues,
     })
 
-    const onSubmit = async (values: z.infer<typeof achievementSchema>) => {
+    const onSubmit = async (values: AchievementFormValues) => {
         setLoading(true)
         try {
             const payload = {
