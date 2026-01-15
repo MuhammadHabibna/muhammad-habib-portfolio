@@ -10,6 +10,7 @@ export type ProjectCategory =
     | "Forecasting (Tabular)"
     | "Analisis Sentiment"
     | "Klasifikasi Teks"
+    | "Experimental Projects"
 
 export type ContentStatus = 'DRAFT' | 'PUBLISHED'
 

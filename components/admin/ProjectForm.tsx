@@ -27,7 +27,9 @@ const CATEGORIES = [
     "Regresi (Tabular)",
     "Forecasting (Tabular)",
     "Analisis Sentiment",
-    "Klasifikasi Teks"
+    "Analisis Sentiment",
+    "Klasifikasi Teks",
+    "Experimental Projects"
 ] as const
 
 const projectSchema = z.object({
@@ -214,6 +216,11 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
                                         ))}
                                     </SelectContent>
                                 </Select>
+                                {field.value === "Experimental Projects" && (
+                                    <p className="text-[0.8rem] text-muted-foreground mt-2">
+                                        For side projects, tools, experiments, and proof-of-concepts.
+                                    </p>
+                                )}
                                 <FormMessage />
                             </FormItem>
                         )}

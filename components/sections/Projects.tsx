@@ -25,7 +25,9 @@ const PROJECT_TYPES = [
     "Regresi (Tabular)",
     "Forecasting (Tabular)",
     "Analisis Sentiment",
-    "Klasifikasi Teks"
+    "Analisis Sentiment",
+    "Klasifikasi Teks",
+    "Experimental Projects"
 ]
 
 export function Projects({ projects }: ProjectsProps) {
@@ -157,7 +159,11 @@ export function Projects({ projects }: ProjectsProps) {
                                             </div>
                                             <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                                                 {project.project_category && (
-                                                    <Badge variant="outline" className="font-normal text-muted-foreground bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+                                                    <Badge
+                                                        variant="outline"
+                                                        className={`font-normal text-muted-foreground bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 ${project.project_category === 'Experimental Projects' ? 'border-dashed border-sky-400/50 text-sky-600 dark:text-sky-400' : ''
+                                                            }`}
+                                                    >
                                                         {project.project_category}
                                                     </Badge>
                                                 )}
