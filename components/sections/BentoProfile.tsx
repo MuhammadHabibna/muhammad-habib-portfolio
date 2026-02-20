@@ -72,11 +72,11 @@ export function BentoProfile({ profile, socials, counts }: BentoProfileProps) {
                             </div>
 
                             <div className="w-full pt-2">
-                                {cvUrl && (
-                                    <Button variant="outline" className="w-full rounded-full">
+                                <Button variant="outline" className="w-full rounded-full" asChild>
+                                    <a href={cvUrl || "/CV.pdf"} target="_blank" rel="noopener noreferrer">
                                         <Download className="mr-2 h-4 w-4" /> Download CV
-                                    </Button>
-                                )}
+                                    </a>
+                                </Button>
                             </div>
                         </CardContent>
                     </Card>
