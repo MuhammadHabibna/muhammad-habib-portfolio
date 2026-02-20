@@ -69,7 +69,7 @@ export function Navbar() {
                 {/* Actions */}
                 <div className="hidden md:flex items-center gap-4">
                     <Button variant="outline" size="sm" className="hidden lg:flex" asChild>
-                        <a href="/cv.pdf" target="_blank" rel="noopener noreferrer">
+                        <a href="/CV ATS - Muhammad Habib.pdf" target="_blank" rel="noopener noreferrer">
                             <Download className="mr-2 h-4 w-4" /> CV
                         </a>
                     </Button>
@@ -100,7 +100,7 @@ export function Navbar() {
                                 ))}
                                 <div className="h-px bg-border my-2" />
                                 <Button className="w-full" asChild>
-                                    <a href="/cv.pdf" target="_blank">Download CV</a>
+                                    <a href="/CV ATS - Muhammad Habib.pdf" target="_blank">Download CV</a>
                                 </Button>
                             </div>
                         </SheetContent>
