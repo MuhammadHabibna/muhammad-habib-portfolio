@@ -1,29 +1,13 @@
 "use client"
 
 import {
-    Document, Page, Text, View, Link, Font, StyleSheet,
+    Document, Page, Text, View, Link, StyleSheet,
 } from "@react-pdf/renderer"
 import { type Profile, type Project, type Achievement, type Organization, type Certification, type SocialLink } from "@/types"
 
-Font.register({
-    family: "Inter",
-    fonts: [
-        { src: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hjQ.woff2", fontWeight: 400 },
-        { src: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuI6fAZ9hjQ.woff2", fontWeight: 600 },
-        { src: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuGKYAZ9hjQ.woff2", fontWeight: 700 },
-    ],
-})
-
-Font.register({
-    family: "JetBrainsMono",
-    fonts: [
-        { src: "https://fonts.gstatic.com/s/jetbrainsmono/v20/tDbY2oqE7hBNaTiNrG7AhjMY-9I0E5Kk6N4qAho1rApn8J6Rg.woff2", fontWeight: 400 },
-    ],
-})
-
 const styles = StyleSheet.create({
     page: {
-        fontFamily: "Inter",
+        fontFamily: "Helvetica",
         fontSize: 11,
         color: "#334155",
         padding: 48,
@@ -140,7 +124,7 @@ const styles = StyleSheet.create({
     },
     techBadge: {
         fontSize: 7,
-        fontFamily: "JetBrainsMono",
+        fontFamily: "Courier",
         backgroundColor: "#f1f5f9",
         color: "#475569",
         paddingHorizontal: 6,
@@ -150,7 +134,7 @@ const styles = StyleSheet.create({
     linkSmall: {
         fontSize: 7,
         color: "#0284c7",
-        fontFamily: "JetBrainsMono",
+        fontFamily: "Courier",
         textDecoration: "none",
     },
     linksRow: {
@@ -171,7 +155,7 @@ const styles = StyleSheet.create({
     entryDate: {
         fontSize: 8,
         color: "#94a3b8",
-        fontFamily: "JetBrainsMono",
+        fontFamily: "Courier",
     },
     entryDesc: {
         fontSize: 9,
@@ -365,7 +349,7 @@ export function PortfolioPDF({
                                         <Text style={styles.entrySub}>
                                             Issued by {c.issuer}
                                             {c.credential_id && (
-                                                <Text style={{ fontFamily: "JetBrainsMono", color: "#94a3b8", marginLeft: 6 }}>
+                                                <Text style={{ fontFamily: "Courier", color: "#94a3b8", marginLeft: 6 }}>
                                                     {" "}ID: {c.credential_id}
                                                 </Text>
                                             )}
