@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     projectDate: {
         fontSize: 8,
         color: "#94a3b8",
-        fontFamily: "JetBrainsMono",
+        fontFamily: "Courier",
     },
     projectSummary: {
         fontSize: 9,
