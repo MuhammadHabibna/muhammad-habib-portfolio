@@ -9,7 +9,9 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, ExternalLink, Github, ChevronDown, Calendar, Globe } from "lucide-react"
+import { Search, ExternalLink, Github, ChevronDown, Calendar, Globe, ArrowRight } from "lucide-react"
+import { TiltCard } from "@/components/TiltCard"
+import { SectionHeading } from "@/components/SectionHeading"
 
 interface ProjectsProps {
     projects: Project[]
@@ -64,15 +66,10 @@ export function Projects({ projects }: ProjectsProps) {
     return (
         <section id="projects" className="py-20 relative bg-slate-50/50 dark:bg-slate-900/50">
             <div className="container px-4 md:px-6">
-                <div className="flex flex-col items-center mb-12 text-center space-y-4">
-                    <h2 className="text-3xl md:text-5xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-sky-600 to-indigo-600">
-                        Featured Projects
-                    </h2>
-                    <p className="text-muted-foreground text-lg max-w-2xl">
-                        Explore my portfolio of AI, Machine Learning, and Web Application projects.
-                    </p>
-                    <div className="w-20 h-1.5 bg-sky-500 rounded-full mt-2" />
-                </div>
+                <SectionHeading
+                    title="Featured Projects"
+                    subtitle="Explore my portfolio of AI, Machine Learning, and Web Application projects."
+                />
 
                 {/* Controls */}
                 <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-10 w-full max-w-6xl mx-auto flex-wrap md:flex-nowrap">
@@ -120,49 +117,46 @@ export function Projects({ projects }: ProjectsProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
                     <AnimatePresence>
                         {visibleProjects.map((project) => (
-                            <motion.div
-                                key={project.id}
-                                layout
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.9 }}
-                                transition={{ duration: 0.3 }}
-                            >
+                            <TiltCard key={project.id} className="relative group">
                                 <Card
-                                    className="h-full flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer overflow-hidden border-slate-200/60 dark:border-slate-800"
+                                    className="h-full flex flex-col hover:shadow-2xl hover:shadow-sky-500/10 transition-all duration-300 cursor-pointer overflow-hidden border-slate-200/60 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm"
                                     onClick={() => setSelectedProject(project)}
                                 >
-                                    <div className="aspect-video w-full bg-muted relative overflow-hidden group">
+                                    <div className="aspect-video w-full bg-muted relative overflow-hidden">
                                         {project.thumbnail_image ? (
-                                            <img src={project.thumbnail_image} alt={project.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                                            <img src={project.thumbnail_image} alt={project.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                                         ) : (
-                                            <div className="w-full h-full flex items-center justify-center bg-sky-100 dark:bg-sky-900/20 text-sky-500">
-                                                <span className="font-bold text-xl">No Image</span>
+                                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-sky-100 to-indigo-100 dark:from-sky-900/20 dark:to-indigo-900/20 text-sky-500">
+                                                <span className="font-bold text-xl font-mono">No Image</span>
                                             </div>
                                         )}
 
-                                        <div className="absolute top-2 left-2 flex gap-2">
-                                            <Badge variant={project.type === 'PERSONAL' ? 'default' : 'secondary'} className="shadow-sm backdrop-blur-md bg-opacity-90">
+                                        {/* Gradient overlay */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                                        <div className="absolute top-3 left-3 flex gap-2">
+                                            <Badge variant={project.type === 'PERSONAL' ? 'default' : 'secondary'} className="shadow-sm backdrop-blur-md bg-white/90 dark:bg-slate-800/90 text-foreground">
                                                 {project.type}
                                             </Badge>
                                         </div>
 
-                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                            <span className="text-white font-medium border border-white/50 px-4 py-2 rounded-full backdrop-blur-sm">View Details</span>
+                                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+                                            <span className="text-white font-medium flex items-center gap-2 bg-white/20 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/30">
+                                                View Details <ArrowRight className="w-4 h-4" />
+                                            </span>
                                         </div>
                                     </div>
 
                                     <CardHeader className="pb-3">
                                         <div className="flex flex-col gap-2">
                                             <div className="flex justify-between items-start">
-                                                <CardTitle className="line-clamp-1 text-lg group-hover:text-primary transition-colors">{project.title}</CardTitle>
+                                                <CardTitle className="line-clamp-1 text-lg group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">{project.title}</CardTitle>
                                             </div>
                                             <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                                                 {project.project_category && (
                                                     <Badge
                                                         variant="outline"
-                                                        className={`font-normal text-muted-foreground bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 ${project.project_category === 'Experimental Projects' ? 'border-dashed border-sky-400/50 text-sky-600 dark:text-sky-400' : ''
-                                                            }`}
+                                                        className={`font-mono text-[11px] font-normal text-muted-foreground bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 ${project.project_category === 'Experimental Projects' ? 'border-dashed border-sky-400/50 text-sky-600 dark:text-sky-400' : ''}`}
                                                     >
                                                         {project.project_category}
                                                     </Badge>
@@ -179,17 +173,17 @@ export function Projects({ projects }: ProjectsProps) {
                                     </CardHeader>
 
                                     <CardContent className="flex-1 mt-auto pt-0">
-                                        <div className="flex flex-wrap gap-2 mt-3">
-                                            {project.tech_stack?.slice(0, 3).map(tech => (
-                                                <Badge key={tech} variant="secondary" className="text-xs bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-0 pointer-events-none">{tech}</Badge>
+                                        <div className="flex flex-wrap gap-1.5 mt-3">
+                                            {project.tech_stack?.slice(0, 4).map(tech => (
+                                                <Badge key={tech} variant="secondary" className="text-[11px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-0 pointer-events-none hover:bg-sky-50 dark:hover:bg-sky-900/20 hover:text-sky-600 transition-colors">{tech}</Badge>
                                             ))}
-                                            {project.tech_stack && project.tech_stack.length > 3 && (
-                                                <Badge variant="outline" className="text-xs pointer-events-none">+{project.tech_stack.length - 3}</Badge>
+                                            {project.tech_stack && project.tech_stack.length > 4 && (
+                                                <Badge variant="outline" className="text-[11px] font-mono pointer-events-none">+{project.tech_stack.length - 4}</Badge>
                                             )}
                                         </div>
                                     </CardContent>
                                 </Card>
-                            </motion.div>
+                            </TiltCard>
                         ))}
                     </AnimatePresence>
                 </div>

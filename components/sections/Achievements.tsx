@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogTrigger, DialogClose } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
 import { type Achievement } from "@/types"
+import { SectionHeading } from "@/components/SectionHeading"
 
 interface AchievementsProps {
     achievements: Achievement[]
@@ -22,20 +23,11 @@ export function Achievements({ achievements }: AchievementsProps) {
     return (
         <section id="achievements" className="py-24 relative z-10">
             <div className="container px-4 md:px-6">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    viewport={{ once: true }}
-                    className="text-center mb-16"
-                >
-                    <h2 className="text-3xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-amber-500 to-orange-600">
-                        Achievements & Competitions
-                    </h2>
-                    <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-                        Milestones and recognition from my journey.
-                    </p>
-                </motion.div>
+                <SectionHeading
+                    title="Achievements & Competitions"
+                    subtitle="Milestones and recognition from my journey."
+                    gradient="from-amber-500 to-orange-600"
+                />
 
                 <div className="relative max-w-4xl mx-auto">
                     <div className="absolute left-8 md:left-[120px] top-4 bottom-4 w-0.5 bg-slate-200 dark:bg-slate-800" />

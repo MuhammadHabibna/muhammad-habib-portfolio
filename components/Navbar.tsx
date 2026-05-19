@@ -5,7 +5,8 @@ import Link from "next/link"
 import { motion, useScroll, useMotionValueEvent } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Menu, X, Download } from "lucide-react"
+import { Menu, X, Download, Sun, Moon } from "lucide-react"
+import { useTheme } from "@/components/ThemeProvider"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
 const navLinks = [
@@ -21,10 +22,33 @@ export function Navbar() {
     const { scrollY } = useScroll()
     const [isScrolled, setIsScrolled] = useState(false)
     const [isOpen, setIsOpen] = useState(false)
+    const [activeSection, setActiveSection] = useState("")
+    const { theme, toggleTheme } = useTheme()
 
     useMotionValueEvent(scrollY, "change", (latest) => {
         setIsScrolled(latest > 50)
     })
+
+    // Track active section via IntersectionObserver
+    useEffect(() => {
+        const sectionIds = navLinks.map(l => l.href.replace("#", ""))
+        const observers: IntersectionObserver[] = []
+
+        sectionIds.forEach(id => {
+            const el = document.getElementById(id)
+            if (!el) return
+            const observer = new IntersectionObserver(
+                ([entry]) => {
+                    if (entry.isIntersecting) setActiveSection(id)
+                },
+                { rootMargin: "-40% 0px -55% 0px" }
+            )
+            observer.observe(el)
+            observers.push(observer)
+        })
+
+        return () => observers.forEach(o => o.disconnect())
+    }, [])
 
     // Smooth scroll handler
     const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -53,21 +77,33 @@ export function Navbar() {
                 </Link>
 
                 {/* Desktop Nav */}
-                <nav className="hidden md:flex items-center gap-6">
-                    {navLinks.map((link) => (
-                        <a
-                            key={link.name}
-                            href={link.href}
-                            onClick={(e) => handleScrollTo(e, link.href)}
-                            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-                        >
-                            {link.name}
-                        </a>
-                    ))}
+                <nav className="hidden md:flex items-center gap-1">
+                    {navLinks.map((link) => {
+                        const isActive = activeSection === link.href.replace("#", "")
+                        return (
+                            <a
+                                key={link.name}
+                                href={link.href}
+                                onClick={(e) => handleScrollTo(e, link.href)}
+                                className={cn(
+                                    "relative text-sm font-medium px-3 py-1.5 rounded-full transition-all duration-200",
+                                    isActive
+                                        ? "text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-900/20"
+                                        : "text-muted-foreground hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800/50"
+                                )}
+                            >
+                                {link.name}
+                            </a>
+                        )
+                    })}
                 </nav>
 
                 {/* Actions */}
                 <div className="hidden md:flex items-center gap-4">
+                    <Button variant="ghost" size="icon" onClick={toggleTheme} className="relative overflow-hidden">
+                        <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                        <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                    </Button>
                     <Button variant="outline" size="sm" className="hidden lg:flex" asChild>
                         <a href="/CV.pdf" target="_blank" rel="noopener noreferrer">
                             <Download className="mr-2 h-4 w-4" /> CV
@@ -99,6 +135,10 @@ export function Navbar() {
                                     </a>
                                 ))}
                                 <div className="h-px bg-border my-2" />
+                                <Button variant="ghost" size="lg" onClick={toggleTheme} className="w-full justify-start gap-3">
+                                    {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                                    {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                                </Button>
                                 <Button className="w-full" asChild>
                                     <a href="/CV.pdf" target="_blank">Download CV</a>
                                 </Button>

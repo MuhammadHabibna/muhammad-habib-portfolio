@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ExternalLink, Award, Linkedin, Calendar, BadgeCheck } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
+import { SectionHeading } from "@/components/SectionHeading"
 
 interface CertificationsProps {
     certifications: Certification[]
@@ -49,19 +50,11 @@ export function Certifications({ certifications }: CertificationsProps) {
 
             <div className="container px-4 md:px-6 relative z-10">
                 <div className="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
-                    <div className="space-y-4 max-w-2xl">
-                        <motion.h2
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            className="text-3xl md:text-5xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-sky-600 to-indigo-600"
-                        >
-                            Licenses & Certifications
-                        </motion.h2>
-                        <p className="text-muted-foreground text-lg">
-                            Professional credentials validating expertise and continuous learning.
-                        </p>
-                    </div>
+                    <SectionHeading
+                        title="Licenses & Certifications"
+                        subtitle="Professional credentials validating expertise and continuous learning."
+                        align="left"
+                    />
 
                     {/* Filters */}
                     <div className="flex gap-4">

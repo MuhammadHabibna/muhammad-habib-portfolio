@@ -3,13 +3,29 @@ export const revalidate = 0;
 
 
 import type { Metadata } from "next";
-import { Inter } from "next/font/google"; // Using Inter as requested
+import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-inter", // Variable for Tailwind
+  variable: "--font-inter",
+});
+
+const geistSans = localFont({
+  src: [
+    { path: "../public/fonts/GeistVF.woff2", style: "normal" },
+  ],
+  variable: "--font-geist-sans",
+});
+
+const geistMono = localFont({
+  src: [
+    { path: "../public/fonts/GeistMonoVF.woff2", style: "normal" },
+  ],
+  variable: "--font-geist-mono",
 });
 
 export const metadata: Metadata = {
@@ -27,14 +43,16 @@ export default function RootLayout({
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
-          "bg-[url('/clouds-pattern.svg')] bg-fixed bg-cover bg-no-repeat", // Placeholder for cloud background
-          inter.variable
+          inter.variable,
+          geistSans.variable,
+          geistMono.variable
         )}
       >
-        <div className="fixed inset-0 bg-gradient-to-b from-sky-200/40 to-white/60 -z-10 pointer-events-none" />
-        <main className="relative z-0">
-          {children}
-        </main>
+        <ThemeProvider>
+          <main className="relative z-0">
+            {children}
+          </main>
+        </ThemeProvider>
       </body>
     </html>
   );

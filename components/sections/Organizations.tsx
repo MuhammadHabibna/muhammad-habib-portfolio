@@ -6,6 +6,7 @@ import { DetailModal } from "@/components/DetailModal"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ExternalLink, Building2, Calendar } from "lucide-react"
+import { SectionHeading } from "@/components/SectionHeading"
 
 interface OrganizationsProps {
     organizations: Organization[]
@@ -17,12 +18,9 @@ export function Organizations({ organizations }: OrganizationsProps) {
     return (
         <section id="experience" className="py-20 relative bg-slate-50/50 dark:bg-slate-900/50">
             <div className="container px-4 md:px-6">
-                <div className="flex flex-col items-center mb-12 text-center space-y-4">
-                    <h2 className="text-3xl md:text-5xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-sky-600 to-indigo-600">
-                        Working Experience
-                    </h2>
-                    <div className="w-20 h-1.5 bg-sky-500 rounded-full mt-2" />
-                </div>
+                <SectionHeading
+                    title="Working Experience"
+                />
 
                 <div className="max-w-4xl mx-auto space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-300 before:to-transparent">
                     {organizations.map((org, i) => (

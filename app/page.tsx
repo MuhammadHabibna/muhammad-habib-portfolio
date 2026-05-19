@@ -7,7 +7,9 @@ import { Organizations } from "@/components/sections/Organizations"
 import { Achievements } from "@/components/sections/Achievements"
 import { Contact } from "@/components/sections/Contact"
 import { Footer } from "@/components/Footer"
+import { SectionDivider } from "@/components/SectionDivider"
 import { VectorCloudBackground } from "@/components/background/VectorCloudBackground"
+import { PageTransition } from "@/components/PageTransition"
 import { createClient } from "@/lib/supabase/server"
 import { DUMMY_SOCIALS } from "@/lib/data"
 
@@ -52,7 +54,8 @@ export default async function Home() {
   return (
     <div className="relative min-h-screen">
       <VectorCloudBackground />
-      <Navbar />
+      <PageTransition>
+        <Navbar />
       <BentoProfile
         profile={portfolioData.profile}
         socials={portfolioData.socials}
@@ -62,13 +65,19 @@ export default async function Home() {
           achievements: portfolioData.achievements.length
         }}
       />
+      <SectionDivider variant="wave" />
       <Projects projects={portfolioData.projects} />
+      <SectionDivider variant="curve" flip />
       <Achievements achievements={portfolioData.achievements} />
+      <SectionDivider variant="wave" />
       <Organizations organizations={portfolioData.organizations} />
+      <SectionDivider variant="angled" flip />
       <Certifications certifications={portfolioData.certifications} />
       {/* <Skills skills={portfolioData.skills} /> */}
+      <SectionDivider variant="curve" />
       <Contact />
       <Footer />
+      </PageTransition>
     </div>
   )
 }

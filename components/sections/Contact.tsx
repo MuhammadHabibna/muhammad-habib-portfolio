@@ -5,20 +5,16 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Mail, MessageSquare, Send } from "lucide-react"
+import { SectionHeading } from "@/components/SectionHeading"
 
 export function Contact() {
     return (
         <section id="contact" className="py-20 relative">
             <div className="container px-4 md:px-6 max-w-4xl mx-auto">
-                <div className="flex flex-col items-center mb-12 text-center space-y-4">
-                    <h2 className="text-3xl md:text-5xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-sky-600 to-indigo-600">
-                        Get In Touch
-                    </h2>
-                    <p className="text-muted-foreground text-lg">
-                        Have a project in mind or just want to say hi? I'd love to hear from you.
-                    </p>
-                    <div className="w-20 h-1.5 bg-sky-500 rounded-full mt-2" />
-                </div>
+                <SectionHeading
+                    title="Get In Touch"
+                    subtitle="Have a project in mind or just want to say hi? I'd love to hear from you."
+                />
 
                 <Card className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-white/20 shadow-xl">
                     <CardHeader>
