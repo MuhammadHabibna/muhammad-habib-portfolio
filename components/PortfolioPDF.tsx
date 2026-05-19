@@ -41,6 +41,34 @@ const styles = StyleSheet.create({
         color: "#0284c7",
         textDecoration: "none",
     },
+    portfolioBanner: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: 14,
+        marginBottom: 6,
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        backgroundColor: "#f0f9ff",
+        borderRadius: 6,
+        borderWidth: 1,
+        borderColor: "#bae6fd",
+    },
+    portfolioBannerIcon: {
+        fontSize: 12,
+        marginRight: 8,
+    },
+    portfolioBannerText: {
+        fontSize: 11,
+        fontWeight: 600,
+        color: "#0284c7",
+    },
+    portfolioBannerUrl: {
+        fontSize: 9,
+        fontFamily: "Courier",
+        color: "#0369a1",
+        marginLeft: 8,
+    },
     bio: {
         fontSize: 10,
         color: "#475569",
@@ -236,6 +264,15 @@ export function PortfolioPDF({
                 </View>
 
                 {profile.bio_short && <Text style={styles.bio}>{profile.bio_short}</Text>}
+
+                {/* Portfolio website link */}
+                <Link src="https://mhabibstudio.vercel.app/" style={{ textDecoration: "none" }}>
+                    <View style={styles.portfolioBanner}>
+                        <Text style={styles.portfolioBannerIcon}>🌐</Text>
+                        <Text style={styles.portfolioBannerText}>View Full Portfolio</Text>
+                        <Text style={styles.portfolioBannerUrl}>mhabibstudio.vercel.app</Text>
+                    </View>
+                </Link>
 
                 <View style={styles.divider} />
 
