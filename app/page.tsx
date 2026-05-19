@@ -64,6 +64,10 @@ export default async function Home() {
           certifications: portfolioData.certifications.length,
           achievements: portfolioData.achievements.length
         }}
+        projects={portfolioData.projects}
+        achievements={portfolioData.achievements}
+        organizations={portfolioData.organizations}
+        certifications={portfolioData.certifications}
       />
       <SectionDivider variant="wave" />
       <Projects projects={portfolioData.projects} />

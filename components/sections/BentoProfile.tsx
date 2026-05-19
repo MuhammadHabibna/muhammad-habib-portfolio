@@ -5,7 +5,8 @@ import { useRef, useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Mail, MapPin, Download, ExternalLink, ChevronDown, Github, Linkedin } from "lucide-react"
-import { type Profile, type SocialLink } from "@/types"
+import { type Profile, type SocialLink, type Project, type Achievement, type Organization, type Certification } from "@/types"
+import { PDFDownloadButton } from "@/components/PDFDownloadButton"
 
 interface BentoProfileProps {
     profile?: Profile | null
@@ -15,6 +16,10 @@ interface BentoProfileProps {
         certifications: number
         achievements: number
     }
+    projects?: Project[]
+    achievements?: Achievement[]
+    organizations?: Organization[]
+    certifications?: Certification[]
 }
 
 function AnimatedCounter({ target, label }: { target: number; label: string }) {
@@ -54,7 +59,7 @@ function AnimatedCounter({ target, label }: { target: number; label: string }) {
     )
 }
 
-export function BentoProfile({ profile, socials, counts }: BentoProfileProps) {
+export function BentoProfile({ profile, socials, counts, projects = [], achievements = [], organizations = [], certifications = [] }: BentoProfileProps) {
     const fullName = profile?.full_name || "Portfolio Owner"
     const headline = profile?.headline || "Full Stack Engineer"
     const bioShort = profile?.bio_short || "Building digital experiences."
@@ -171,6 +176,14 @@ export function BentoProfile({ profile, socials, counts }: BentoProfileProps) {
                                 <Download className="mr-2 h-5 w-5" /> Download CV
                             </a>
                         </Button>
+                        <PDFDownloadButton
+                            profile={profile || { id: "", full_name: fullName, headline: headline, bio_short: bioShort, bio_long: null, location: location, profile_photo: null, banner_image: null, cv_url: null, contact_email: null }}
+                            socials={socials || []}
+                            projects={projects}
+                            achievements={achievements}
+                            organizations={organizations}
+                            certifications={certifications}
+                        />
                         <Button size="lg" variant="outline" className="rounded-full px-8 border-slate-300 dark:border-slate-700" asChild>
                             <a href="#contact">
                                 <Mail className="mr-2 h-5 w-5" /> Contact Me
