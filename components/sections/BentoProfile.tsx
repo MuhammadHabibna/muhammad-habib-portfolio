@@ -101,23 +101,27 @@ export function BentoProfile({ profile, socials, counts }: BentoProfileProps) {
                         <div className="absolute bottom-2 right-2 bg-emerald-500 w-5 h-5 rounded-full border-[3px] border-white dark:border-slate-900 shadow-lg" title="Available for work" />
                     </motion.div>
 
-                    {/* Animated name */}
+                    {/* Animated name - split into 2 lines */}
                     <div className="mb-4 overflow-hidden">
                         <motion.h1
                             className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter"
                             aria-label={fullName}
                         >
-                            {fullName.split("").map((char, i) => (
-                                <motion.span
-                                    key={i}
-                                    custom={i}
-                                    variants={letterVariants}
-                                    initial="hidden"
-                                    animate="visible"
-                                    className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-white dark:via-slate-200 dark:to-white"
-                                >
-                                    {char === " " ? "\u00A0" : char}
-                                </motion.span>
+                            {["Muhammad Habib", "Nur Aiman"].map((line, lineIdx) => (
+                                <span key={lineIdx} className="block">
+                                    {line.split("").map((char, i) => (
+                                        <motion.span
+                                            key={`${lineIdx}-${i}`}
+                                            custom={lineIdx * 20 + i}
+                                            variants={letterVariants}
+                                            initial="hidden"
+                                            animate="visible"
+                                            className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-white dark:via-slate-200 dark:to-white"
+                                        >
+                                            {char === " " ? "\u00A0" : char}
+                                        </motion.span>
+                                    ))}
+                                </span>
                             ))}
                         </motion.h1>
                     </div>
