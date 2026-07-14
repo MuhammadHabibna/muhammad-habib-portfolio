@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { motion } from "framer-motion"
 import { type Organization } from "@/types"
 import { DetailModal } from "@/components/DetailModal"
 import { Button } from "@/components/ui/button"
@@ -24,22 +25,36 @@ export function Organizations({ organizations }: OrganizationsProps) {
 
                 <div className="max-w-4xl mx-auto space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-300 before:to-transparent">
                     {organizations.map((org, i) => (
-                        <div key={org.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                        <motion.div
+                            key={org.id}
+                            className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group"
+                            initial={{ opacity: 0, x: i % 2 === 0 ? -30 : 30 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true, amount: 0.4 }}
+                            transition={{ duration: 0.5, ease: "easeOut" }}
+                        >
                             {/* Dot */}
-                            <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-sky-500 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 mx-auto md:mx-0 absolute left-0 md:left-1/2 -translate-x-1 md:translate-x-0">
+                            <motion.div
+                                initial={{ scale: 0 }}
+                                whileInView={{ scale: 1 }}
+                                viewport={{ once: true, amount: 0.4 }}
+                                transition={{ delay: 0.15, type: "spring", stiffness: 300, damping: 15 }}
+                                className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-indigo-500 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 mx-auto md:mx-0 absolute left-0 md:left-1/2 -translate-x-1 md:translate-x-0"
+                            >
                                 <Building2 className="w-5 h-5 text-white" />
-                            </div>
+                            </motion.div>
 
                             {/* Card */}
-                            <div
-                                className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-md hover:shadow-xl transition-all border border-slate-100 dark:border-slate-700 cursor-pointer ml-14 md:ml-0"
+                            <motion.div
+                                whileHover={{ y: -4 }}
+                                className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-md hover:shadow-xl hover:shadow-indigo-500/10 transition-all border border-slate-100 dark:border-slate-700 cursor-pointer ml-14 md:ml-0"
                                 onClick={() => setSelectedOrg(org)}
                             >
                                 <div className="flex flex-col space-y-2">
                                     <div className="flex justify-between items-start">
                                         <div>
                                             <h3 className="font-bold text-lg md:text-xl text-slate-800 dark:text-slate-100">{org.role_title}</h3>
-                                            <p className="text-sky-600 font-medium">{org.org_name}</p>
+                                            <p className="text-indigo-600 font-medium">{org.org_name}</p>
                                         </div>
                                         {org.logo && <img src={org.logo} alt={org.org_name} className="w-10 h-10 object-contain rounded-md bg-white p-1 shadow-sm" />}
                                     </div>
@@ -51,8 +66,8 @@ export function Organizations({ organizations }: OrganizationsProps) {
                                         {org.description}
                                     </p>
                                 </div>
-                            </div>
-                        </div>
+                            </motion.div>
+                        </motion.div>
                     ))}
                 </div>
             </div>

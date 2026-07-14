@@ -45,7 +45,7 @@ export function Certifications({ certifications }: CertificationsProps) {
         <section id="certifications" className="py-24 relative overflow-hidden">
             {/* Background Decoration */}
             <div className="absolute top-0 right-0 p-20 opacity-20 transform translate-x-1/2 -translate-y-1/2 pointer-events-none">
-                <div className="w-96 h-96 bg-sky-500 rounded-full blur-3xl" />
+                <div className="w-96 h-96 bg-indigo-500 rounded-full blur-3xl" />
             </div>
 
             <div className="container px-4 md:px-6 relative z-10">
@@ -94,12 +94,12 @@ export function Certifications({ certifications }: CertificationsProps) {
                                 exit={{ opacity: 0, scale: 0.9 }}
                                 transition={{ duration: 0.2 }}
                             >
-                                <Card className="h-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 group hover:border-sky-500/50 hover:shadow-lg hover:shadow-sky-500/10 transition-all duration-300 relative overflow-hidden">
+                                <Card className="h-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 group hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 relative overflow-hidden">
                                     {/* Decorative Blob */}
-                                    <div className="absolute -top-10 -right-10 w-32 h-32 bg-sky-500/10 rounded-full blur-2xl group-hover:bg-sky-500/20 transition-all" />
+                                    <div className="absolute -top-10 -right-10 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl group-hover:bg-indigo-500/20 transition-all" />
 
                                     <CardHeader className="flex flex-row items-start justify-between space-y-0 p-6 pb-2 relative z-10">
-                                        <Badge variant="outline" className=" bg-sky-50 dark:bg-sky-900/10 text-sky-600 border-sky-200 dark:border-sky-800">
+                                        <Badge variant="outline" className=" bg-indigo-50 dark:bg-indigo-900/10 text-indigo-600 border-indigo-200 dark:border-indigo-800">
                                             {cert.issuer}
                                         </Badge>
                                         <div className="p-2 bg-indigo-50 dark:bg-indigo-900/20 rounded-full">
@@ -115,10 +115,10 @@ export function Certifications({ certifications }: CertificationsProps) {
                                                         href={cert.credential_url}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="font-bold text-lg leading-tight group-hover:text-primary transition-colors inline-flex items-center gap-2 hover:underline decoration-sky-500/30 underline-offset-4"
+                                                        className="font-bold text-lg leading-tight group-hover:text-primary transition-colors inline-flex items-center gap-2 hover:underline decoration-indigo-500/30 underline-offset-4"
                                                     >
                                                         {cert.name}
-                                                        <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-sky-500 transition-colors" />
+                                                        <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-indigo-500 transition-colors" />
                                                     </a>
                                                 ) : (
                                                     <h3 className="font-bold text-lg leading-tight group-hover:text-primary transition-colors">

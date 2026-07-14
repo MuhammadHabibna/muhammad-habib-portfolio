@@ -11,32 +11,17 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Badge } from "@/components/ui/badge"
 import { ImageUpload } from "@/components/admin/ImageUpload"
 import { Card, CardContent } from "@/components/ui/card"
 import { Loader2, X, Plus } from "lucide-react"
-import { Project } from "@/types"
-
-// Defines the categories strictly to match the ProjectCategory type
-const CATEGORIES = [
-    "Klasifikasi Citra",
-    "Object Detection",
-    "Segmentasi Citra",
-    "Object Character Recognition",
-    "Clustering (Tabular)",
-    "Klasifikasi (Tabular)",
-    "Regresi (Tabular)",
-    "Forecasting (Tabular)",
-    "Analisis Sentiment",
-    "Analisis Sentiment",
-    "Klasifikasi Teks",
-    "Experimental Projects"
-] as const
+import { Project, PROJECT_CATEGORIES } from "@/types"
 
 const projectSchema = z.object({
     title: z.string().min(2, "Title must be at least 2 characters"),
     slug: z.string().min(2, "Slug must be at least 2 characters"),
     type: z.enum(["PERSONAL", "TEAM"]),
-    project_category: z.enum(CATEGORIES), // Renamed from project_type
+    project_category: z.array(z.enum(PROJECT_CATEGORIES)).min(1, "Select at least one category"),
     status: z.enum(["DRAFT", "PUBLISHED"]),
     start_date: z.string().optional().or(z.literal("")),
     end_date: z.string().optional().or(z.literal("")),
@@ -70,7 +55,7 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
         title: initialData?.title || "",
         slug: initialData?.slug || "",
         type: initialData?.type || "PERSONAL",
-        project_category: initialData?.project_category || "Klasifikasi Citra", // Renamed from project_type
+        project_category: initialData?.project_category || [],
         status: initialData?.status || "DRAFT",
         start_date: initialData?.start_date || "",
         end_date: initialData?.end_date || "",
@@ -199,31 +184,44 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
                     <FormField
                         control={form.control}
                         name="project_category"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Category</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        render={({ field }) => {
+                            const selected = field.value || []
+                            const toggle = (category: string) => {
+                                if (selected.includes(category as any)) {
+                                    field.onChange(selected.filter(c => c !== category))
+                                } else {
+                                    field.onChange([...selected, category])
+                                }
+                            }
+                            return (
+                                <FormItem className="md:col-span-2">
+                                    <FormLabel>Categories</FormLabel>
                                     <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select category" />
-                                        </SelectTrigger>
+                                        <div className="flex flex-wrap gap-2">
+                                            {PROJECT_CATEGORIES.map(category => {
+                                                const isSelected = selected.includes(category)
+                                                return (
+                                                    <Badge
+                                                        key={category}
+                                                        variant={isSelected ? "default" : "outline"}
+                                                        className="cursor-pointer select-none px-3 py-1.5 text-sm"
+                                                        onClick={() => toggle(category)}
+                                                    >
+                                                        {category}
+                                                    </Badge>
+                                                )
+                                            })}
+                                        </div>
                                     </FormControl>
-                                    <SelectContent>
-                                        {CATEGORIES.map(category => (
-                                            <SelectItem key={category} value={category}>
-                                                {category}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                {field.value === "Experimental Projects" && (
-                                    <p className="text-[0.8rem] text-muted-foreground mt-2">
-                                        For side projects, tools, experiments, and proof-of-concepts.
-                                    </p>
-                                )}
-                                <FormMessage />
-                            </FormItem>
-                        )}
+                                    {selected.includes("Experimental Projects") && (
+                                        <p className="text-[0.8rem] text-muted-foreground mt-2">
+                                            For side projects, tools, experiments, and proof-of-concepts.
+                                        </p>
+                                    )}
+                                    <FormMessage />
+                                </FormItem>
+                            )
+                        }}
                     />
 
                     <FormField

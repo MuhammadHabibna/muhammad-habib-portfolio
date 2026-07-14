@@ -33,7 +33,7 @@ export function Footer() {
                 >
                     {[...TECH_STACK, ...TECH_STACK, ...TECH_STACK].map((tech, i) => (
                         <span key={i} className="text-sm font-mono text-white/40 uppercase tracking-widest">
-                            {tech} <span className="text-sky-500/40 mx-4">•</span>
+                            {tech} <span className="text-indigo-500/40 mx-4">•</span>
                         </span>
                     ))}
                 </motion.div>
@@ -43,7 +43,7 @@ export function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16">
                     {/* Brand */}
                     <div className="space-y-4">
-                        <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-indigo-400">
+                        <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-indigo-400">
                             Portfolio
                         </h3>
                         <p className="text-white/50 text-sm leading-relaxed max-w-xs">
@@ -70,9 +70,9 @@ export function Footer() {
                                 <a
                                     key={link.name}
                                     href={link.href}
-                                    className="text-sm text-white/50 hover:text-sky-400 transition-colors inline-flex items-center gap-1.5 group"
+                                    className="text-sm text-white/50 hover:text-indigo-400 transition-colors inline-flex items-center gap-1.5 group"
                                 >
-                                    <span className="w-0 group-hover:w-2 h-px bg-sky-400 transition-all duration-200" />
+                                    <span className="w-0 group-hover:w-2 h-px bg-indigo-400 transition-all duration-200" />
                                     {link.name}
                                 </a>
                             ))}
@@ -84,7 +84,7 @@ export function Footer() {
                         <h4 className="text-sm font-semibold uppercase tracking-wider text-white/80">Built With</h4>
                         <div className="flex flex-wrap gap-2">
                             {TECH_STACK.slice(0, 8).map(tech => (
-                                <span key={tech} className="text-xs font-mono px-2.5 py-1 rounded-full border border-white/10 text-white/50 hover:text-sky-400 hover:border-sky-400/30 transition-colors">
+                                <span key={tech} className="text-xs font-mono px-2.5 py-1 rounded-full border border-white/10 text-white/50 hover:text-indigo-400 hover:border-indigo-400/30 transition-colors">
                                     {tech}
                                 </span>
                             ))}

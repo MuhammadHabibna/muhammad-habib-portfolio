@@ -12,7 +12,7 @@ interface SectionHeadingProps {
 export function SectionHeading({
     title,
     subtitle,
-    gradient = "from-sky-600 to-indigo-600",
+    gradient = "from-indigo-600 to-indigo-600",
     align = "center",
 }: SectionHeadingProps) {
     return (
@@ -36,7 +36,7 @@ export function SectionHeading({
                 whileInView={{ width: "5rem" }}
                 transition={{ duration: 0.8, delay: 0.3, ease: [0.215, 0.61, 0.355, 1] }}
                 viewport={{ once: true }}
-                className="h-1.5 bg-gradient-to-r from-sky-500 to-indigo-500 rounded-full"
+                className="h-1.5 bg-gradient-to-r from-indigo-500 to-indigo-500 rounded-full"
             />
         </motion.div>
     )

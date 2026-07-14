@@ -72,7 +72,7 @@ export function Navbar() {
         >
             <div className="container mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
                 {/* Brand */}
-                <Link href="/" className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-sky-600 to-indigo-600">
+                <Link href="/" className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-indigo-600">
                     Portfolio
                 </Link>
 
@@ -88,7 +88,7 @@ export function Navbar() {
                                 className={cn(
                                     "relative text-sm font-medium px-3 py-1.5 rounded-full transition-all duration-200",
                                     isActive
-                                        ? "text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-900/20"
+                                        ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20"
                                         : "text-muted-foreground hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800/50"
                                 )}
                             >

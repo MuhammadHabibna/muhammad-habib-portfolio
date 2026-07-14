@@ -19,7 +19,7 @@ export function VectorCloudBackground() {
                 <motion.div
                     animate={{ y: [0, -30, 0], scale: [1, 1.1, 1], x: [0, 20, 0] }}
                     transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute -top-32 -right-32 w-[600px] h-[600px] bg-sky-400/15 dark:bg-sky-600/8 blur-[120px] rounded-full"
+                    className="absolute -top-32 -right-32 w-[600px] h-[600px] bg-indigo-400/15 dark:bg-indigo-600/8 blur-[120px] rounded-full"
                 />
 
                 {/* Bottom Left - Indigo */}

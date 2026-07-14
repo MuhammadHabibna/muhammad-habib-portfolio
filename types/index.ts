@@ -1,16 +1,22 @@
 export type ProjectType = 'PERSONAL' | 'TEAM'
-export type ProjectCategory =
-    | "Klasifikasi Citra"
-    | "Object Detection"
-    | "Segmentasi Citra"
-    | "Object Character Recognition"
-    | "Clustering (Tabular)"
-    | "Klasifikasi (Tabular)"
-    | "Regresi (Tabular)"
-    | "Forecasting (Tabular)"
-    | "Analisis Sentiment"
-    | "Klasifikasi Teks"
-    | "Experimental Projects"
+
+export const PROJECT_CATEGORIES = [
+    "Klasifikasi Citra",
+    "Object Detection",
+    "Segmentasi Citra",
+    "Object Character Recognition",
+    "Clustering (Tabular)",
+    "Klasifikasi (Tabular)",
+    "Regresi (Tabular)",
+    "Forecasting (Tabular)",
+    "Analisis Sentiment",
+    "Klasifikasi Teks",
+    "Web Application",
+    "Web Dashboard / Analytics",
+    "Experimental Projects",
+] as const
+
+export type ProjectCategory = typeof PROJECT_CATEGORIES[number]
 
 export type ContentStatus = 'DRAFT' | 'PUBLISHED'
 
@@ -19,7 +25,7 @@ export interface Project {
     title: string
     slug: string
     type: ProjectType
-    project_category: ProjectCategory
+    project_category: ProjectCategory[]
     status: ContentStatus
     start_date: string | null
     end_date: string | null

@@ -38,7 +38,7 @@ export function AdminSidebar({ children }: { children: React.ReactNode }) {
             {/* Sidebar */}
             <aside className="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col hidden md:flex">
                 <div className="p-6 h-16 flex items-center border-b border-sidebar-border">
-                    <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-sky-600 to-indigo-600">
+                    <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-indigo-600">
                         Studio
                     </h1>
                 </div>
@@ -48,7 +48,7 @@ export function AdminSidebar({ children }: { children: React.ReactNode }) {
                         const isActive = pathname === item.href
                         return (
                             <Link key={item.href} href={item.href}>
-                                <Button variant={isActive ? "secondary" : "ghost"} className={cn("w-full justify-start", isActive && "bg-sky-50 dark:bg-sky-900/20 text-sky-700 dark:text-sky-400")}>
+                                <Button variant={isActive ? "secondary" : "ghost"} className={cn("w-full justify-start", isActive && "bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400")}>
                                     <item.icon className="mr-2 h-4 w-4" />
                                     {item.name}
                                 </Button>

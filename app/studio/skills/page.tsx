@@ -40,7 +40,7 @@ export default async function SkillsPage() {
                             <h3 className="font-bold text-lg">{skill.skill_name}</h3>
                             <div className="mt-2 text-xs text-muted-foreground">Proficiency: {skill.level}%</div>
                             <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-1.5 mt-1">
-                                <div className="bg-sky-500 h-1.5 rounded-full" style={{ width: `${skill.level}%` }}></div>
+                                <div className="bg-indigo-500 h-1.5 rounded-full" style={{ width: `${skill.level}%` }}></div>
                             </div>
                         </div>
                         <div className="mt-4 pt-4 border-t flex justify-end">

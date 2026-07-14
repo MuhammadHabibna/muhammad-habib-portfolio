@@ -55,7 +55,7 @@ export function Hero({ profile, socials }: HeroProps) {
                             {fullName}
                         </motion.h1>
                         <motion.p
-                            className="text-lg md:text-2xl text-sky-600 font-medium"
+                            className="text-lg md:text-2xl text-indigo-600 font-medium"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.4 }}
@@ -80,7 +80,7 @@ export function Hero({ profile, socials }: HeroProps) {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.6 }}
                     >
-                        <Button size="lg" className="rounded-full shadow-lg hover:shadow-xl transition-all shadow-sky-500/20 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 border-none">
+                        <Button size="lg" className="rounded-full shadow-lg hover:shadow-xl transition-all shadow-indigo-500/20 bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 border-none">
                             Contact Me
                         </Button>
                         <Button size="lg" variant="outline" className="rounded-full bg-white/50 backdrop-blur-sm border-white/40 hover:bg-white/80">
@@ -96,7 +96,7 @@ export function Hero({ profile, socials }: HeroProps) {
                         transition={{ delay: 0.8 }}
                     >
                         {socials ? socials.map(s => (
-                            <a key={s.id} href={s.url} target="_blank" rel="noopener" className="hover:text-sky-600 hover:scale-110 transition-transform">
+                            <a key={s.id} href={s.url} target="_blank" rel="noopener" className="hover:text-indigo-600 hover:scale-110 transition-transform">
                                 {/* Map platform to icon, logic needed. Simplified for now. */}
                                 <span className="capitalize">{s.platform}</span>
                             </a>

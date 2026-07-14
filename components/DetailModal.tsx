@@ -40,7 +40,7 @@ export function DetailModal({
             >
                 <div className="flex flex-col h-full max-h-[90vh]">
                     <DialogHeader className="p-6 pb-2 shrink-0 space-y-1">
-                        <DialogTitle className="text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-sky-600 to-indigo-600">
+                        <DialogTitle className="text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-indigo-600">
                             {title}
                         </DialogTitle>
                         {description && (

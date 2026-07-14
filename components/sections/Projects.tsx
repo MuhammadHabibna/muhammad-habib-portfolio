@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { type Project } from "@/types"
+import { type Project, PROJECT_CATEGORIES } from "@/types"
 import { DetailModal } from "@/components/DetailModal"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -17,21 +17,6 @@ interface ProjectsProps {
     projects: Project[]
 }
 
-const PROJECT_TYPES = [
-    "Klasifikasi Citra",
-    "Object Detection",
-    "Segmentasi Citra",
-    "Object Character Recognition",
-    "Clustering (Tabular)",
-    "Klasifikasi (Tabular)",
-    "Regresi (Tabular)",
-    "Forecasting (Tabular)",
-    "Analisis Sentiment",
-    "Analisis Sentiment",
-    "Klasifikasi Teks",
-    "Experimental Projects"
-]
-
 export function Projects({ projects }: ProjectsProps) {
     const [scopeFilter, setScopeFilter] = useState("ALL") // ALL, PERSONAL, TEAM
     const [categoryFilter, setCategoryFilter] = useState("ALL") // Renamed from typeFilter
@@ -41,12 +26,12 @@ export function Projects({ projects }: ProjectsProps) {
 
     const filteredProjects = projects.filter((p) => {
         const matchesScope = scopeFilter === "ALL" || p.type === scopeFilter
-        const matchesCategory = categoryFilter === "ALL" || (p.project_category && p.project_category === categoryFilter)
+        const matchesCategory = categoryFilter === "ALL" || (p.project_category?.includes(categoryFilter as any))
 
         const isMatch = matchesScope && matchesCategory &&
             (p.title.toLowerCase().includes(search.toLowerCase()) ||
                 p.tech_stack?.some(t => t.toLowerCase().includes(search.toLowerCase())) ||
-                p.project_category?.toLowerCase().includes(search.toLowerCase())
+                p.project_category?.some(c => c.toLowerCase().includes(search.toLowerCase()))
             )
 
         return isMatch
@@ -95,7 +80,7 @@ export function Projects({ projects }: ProjectsProps) {
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="ALL">All Categories</SelectItem>
-                                {PROJECT_TYPES.map(t => (
+                                {PROJECT_CATEGORIES.map(t => (
                                     <SelectItem key={t} value={t}>{t}</SelectItem>
                                 ))}
                             </SelectContent>
@@ -119,14 +104,14 @@ export function Projects({ projects }: ProjectsProps) {
                         {visibleProjects.map((project) => (
                             <TiltCard key={project.id} className="relative group">
                                 <Card
-                                    className="h-full flex flex-col hover:shadow-2xl hover:shadow-sky-500/10 transition-all duration-300 cursor-pointer overflow-hidden border-slate-200/60 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm"
+                                    className="h-full flex flex-col hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-300 cursor-pointer overflow-hidden border-slate-200/60 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm"
                                     onClick={() => setSelectedProject(project)}
                                 >
                                     <div className="aspect-video w-full bg-muted relative overflow-hidden">
                                         {project.thumbnail_image ? (
                                             <img src={project.thumbnail_image} alt={project.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                                         ) : (
-                                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-sky-100 to-indigo-100 dark:from-sky-900/20 dark:to-indigo-900/20 text-sky-500">
+                                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-100 to-teal-100 dark:from-indigo-900/20 dark:to-teal-900/20 text-indigo-500">
                                                 <span className="font-bold text-xl font-mono">No Image</span>
                                             </div>
                                         )}
@@ -150,17 +135,18 @@ export function Projects({ projects }: ProjectsProps) {
                                     <CardHeader className="pb-3">
                                         <div className="flex flex-col gap-2">
                                             <div className="flex justify-between items-start">
-                                                <CardTitle className="line-clamp-1 text-lg group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">{project.title}</CardTitle>
+                                                <CardTitle className="line-clamp-1 text-lg group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{project.title}</CardTitle>
                                             </div>
                                             <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                                                {project.project_category && (
+                                                {project.project_category?.map(category => (
                                                     <Badge
+                                                        key={category}
                                                         variant="outline"
-                                                        className={`font-mono text-[11px] font-normal text-muted-foreground bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 ${project.project_category === 'Experimental Projects' ? 'border-dashed border-sky-400/50 text-sky-600 dark:text-sky-400' : ''}`}
+                                                        className={`font-mono text-[11px] font-normal text-muted-foreground bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 ${category === 'Experimental Projects' ? 'border-dashed border-teal-400/50 text-teal-600 dark:text-teal-400' : ''}`}
                                                     >
-                                                        {project.project_category}
+                                                        {category}
                                                     </Badge>
-                                                )}
+                                                ))}
                                                 {(project.start_date || project.end_date) && (
                                                     <span className="flex items-center gap-1">
                                                         <Calendar className="h-3 w-3" />
@@ -175,7 +161,7 @@ export function Projects({ projects }: ProjectsProps) {
                                     <CardContent className="flex-1 mt-auto pt-0">
                                         <div className="flex flex-wrap gap-1.5 mt-3">
                                             {project.tech_stack?.slice(0, 4).map(tech => (
-                                                <Badge key={tech} variant="secondary" className="text-[11px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-0 pointer-events-none hover:bg-sky-50 dark:hover:bg-sky-900/20 hover:text-sky-600 transition-colors">{tech}</Badge>
+                                                <Badge key={tech} variant="secondary" className="text-[11px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-0 pointer-events-none hover:bg-indigo-50 dark:hover:bg-indigo-900/20 hover:text-indigo-600 transition-colors">{tech}</Badge>
                                             ))}
                                             {project.tech_stack && project.tech_stack.length > 4 && (
                                                 <Badge variant="outline" className="text-[11px] font-mono pointer-events-none">+{project.tech_stack.length - 4}</Badge>
@@ -233,11 +219,11 @@ export function Projects({ projects }: ProjectsProps) {
 
                         <div className="flex flex-wrap items-center gap-3">
                             <Badge className="text-sm px-3 py-1">{selectedProject.type}</Badge>
-                            {selectedProject.project_category && (
-                                <Badge variant="outline" className="text-sm px-3 py-1 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
-                                    {selectedProject.project_category}
+                            {selectedProject.project_category?.map(category => (
+                                <Badge key={category} variant="outline" className="text-sm px-3 py-1 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+                                    {category}
                                 </Badge>
-                            )}
+                            ))}
                             <span className="text-muted-foreground text-sm flex items-center gap-1 border-l pl-3 border-slate-200 dark:border-slate-700">
                                 <Calendar className="h-4 w-4" />
                                 {formatDate(selectedProject.start_date)} - {selectedProject.end_date ? formatDate(selectedProject.end_date) : "Present"}
@@ -284,7 +270,7 @@ export function Projects({ projects }: ProjectsProps) {
                                 </Button>
                             )}
                             {selectedProject.demo_url && (
-                                <Button asChild className="gap-2 bg-sky-600 hover:bg-sky-700 text-white">
+                                <Button asChild className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white">
                                     <a href={selectedProject.demo_url} target="_blank" rel="noopener noreferrer">
                                         <Globe className="h-4 w-4" /> Live Demo
                                     </a>
