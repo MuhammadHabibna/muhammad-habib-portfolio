@@ -1,9 +1,9 @@
 import { Navbar } from "@/components/Navbar"
-import { BentoProfile } from "@/components/sections/BentoProfile"
+import { HomeSection } from "@/components/sections/HomeSection"
+import { AboutSection } from "@/components/sections/AboutSection"
 import { Projects } from "@/components/sections/Projects"
 import { Certifications } from "@/components/sections/Certifications"
 import { Organizations } from "@/components/sections/Organizations"
-// import { Skills } from "@/components/sections/Skills"
 import { Achievements } from "@/components/sections/Achievements"
 import { Contact } from "@/components/sections/Contact"
 import { Footer } from "@/components/Footer"
@@ -25,30 +25,40 @@ export default async function Home() {
     { data: projects },
     { data: certifications },
     { data: organizations },
-    // { data: skills },
     { data: achievements }
   ] = await Promise.all([
     supabase.from('profiles').select('*').single(),
     supabase.from('projects').select('*').order('created_at', { ascending: false }),
     supabase.from('certifications').select('*').eq('status', 'PUBLISHED').order('issue_date', { ascending: false }),
     supabase.from('organizations').select('*').eq('status', 'PUBLISHED').order('start_date', { ascending: false }),
-    // supabase.from('skills').select('*').eq('status', 'PUBLISHED').order('level', { ascending: false }),
     supabase.from('achievements').select('*').eq('status', 'PUBLISHED').order('year', { ascending: false }).order('sort_order', { ascending: true })
   ])
 
   const portfolioData = {
     profile: profile || {
+      id: "",
       full_name: "Portfolio Owner",
       headline: "Welcome to my portfolio",
+      tagline: null,
       bio_short: "Please configure your profile in the Studio.",
+      bio_long: null,
       location: "Internet",
+      profile_photo: null,
+      banner_image: null,
+      cv_url: null,
+      contact_email: null,
     },
     socials: DUMMY_SOCIALS,
     projects: projects || [],
     certifications: certifications || [],
     organizations: organizations || [],
-    // skills: skills || [],
     achievements: achievements || []
+  }
+
+  const counts = {
+    projects: portfolioData.projects.length,
+    certifications: portfolioData.certifications.length,
+    achievements: portfolioData.achievements.length,
   }
 
   return (
@@ -56,31 +66,51 @@ export default async function Home() {
       <VectorCloudBackground />
       <PageTransition>
         <Navbar />
-      <BentoProfile
-        profile={portfolioData.profile}
-        socials={portfolioData.socials}
-        counts={{
-          projects: portfolioData.projects.length,
-          certifications: portfolioData.certifications.length,
-          achievements: portfolioData.achievements.length
-        }}
-        projects={portfolioData.projects}
-        achievements={portfolioData.achievements}
-        organizations={portfolioData.organizations}
-        certifications={portfolioData.certifications}
-      />
-      <SectionDivider variant="wave" />
-      <Projects projects={portfolioData.projects} />
-      <SectionDivider variant="curve" flip />
-      <Achievements achievements={portfolioData.achievements} />
-      <SectionDivider variant="wave" />
-      <Organizations organizations={portfolioData.organizations} />
-      <SectionDivider variant="angled" flip />
-      <Certifications certifications={portfolioData.certifications} />
-      {/* <Skills skills={portfolioData.skills} /> */}
-      <SectionDivider variant="curve" />
-      <Contact />
-      <Footer />
+
+        {/* ── Home Hero ──────────────────────── */}
+        <HomeSection
+          profile={portfolioData.profile}
+          socials={portfolioData.socials}
+        />
+
+        <SectionDivider variant="wave" />
+
+        {/* ── About ─────────────────────────── */}
+        <AboutSection
+          profile={portfolioData.profile}
+          socials={portfolioData.socials}
+          projects={portfolioData.projects}
+          achievements={portfolioData.achievements}
+          certifications={portfolioData.certifications}
+          counts={counts}
+        />
+
+        <SectionDivider variant="curve" flip />
+
+        {/* ── Projects ──────────────────────── */}
+        <Projects projects={portfolioData.projects} />
+
+        <SectionDivider variant="wave" />
+
+        {/* ── Achievements ──────────────────── */}
+        <Achievements achievements={portfolioData.achievements} />
+
+        <SectionDivider variant="angled" flip />
+
+        {/* ── Organizations / Experience ─────── */}
+        <Organizations organizations={portfolioData.organizations} />
+
+        <SectionDivider variant="curve" />
+
+        {/* ── Certifications ─────────────────── */}
+        <Certifications certifications={portfolioData.certifications} />
+
+        <SectionDivider variant="wave" flip />
+
+        {/* ── Contact ───────────────────────── */}
+        <Contact />
+
+        <Footer />
       </PageTransition>
     </div>
   )

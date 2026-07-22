@@ -8,6 +8,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { IntroWrapper } from "@/components/IntroWrapper";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -49,9 +50,11 @@ export default function RootLayout({
         )}
       >
         <ThemeProvider>
-          <main className="relative z-0">
-            {children}
-          </main>
+          <IntroWrapper>
+            <main className="relative z-0">
+              {children}
+            </main>
+          </IntroWrapper>
         </ThemeProvider>
       </body>
     </html>

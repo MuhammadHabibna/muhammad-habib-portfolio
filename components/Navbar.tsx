@@ -1,40 +1,51 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Link from "next/link"
-import { motion, useScroll, useMotionValueEvent } from "framer-motion"
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion"
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Menu, X, Download, Sun, Moon } from "lucide-react"
+import {
+    Home,
+    User,
+    Briefcase,
+    FolderOpen,
+    Mail,
+    Globe,
+    Trophy,
+    GraduationCap,
+    Menu,
+    X,
+    Sun,
+    Moon,
+} from "lucide-react"
 import { useTheme } from "@/components/ThemeProvider"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
 const navLinks = [
-    { name: "About", href: "#about" },
-    { name: "Projects", href: "#projects" },
-    { name: "Certifications", href: "#certifications" },
-    { name: "Experience", href: "#experience" }, // Org
-    // { name: "Skills", href: "#skills" },
-    { name: "Contact", href: "#contact" },
+    { name: "Home",           href: "#home",          icon: Home },
+    { name: "About",          href: "#about",         icon: User },
+    { name: "Projects",       href: "#projects",      icon: FolderOpen },
+    { name: "Achievements",   href: "#achievements",  icon: Trophy },
+    { name: "Experience",     href: "#experience",    icon: Briefcase },
+    { name: "Certifications", href: "#certifications",icon: GraduationCap },
+    { name: "Contact",        href: "#contact",       icon: Mail },
 ]
 
 export function Navbar() {
     const { scrollY } = useScroll()
     const [isScrolled, setIsScrolled] = useState(false)
-    const [isOpen, setIsOpen] = useState(false)
-    const [activeSection, setActiveSection] = useState("")
+    const [activeSection, setActiveSection] = useState("home")
+    const [mobileOpen, setMobileOpen] = useState(false)
     const { theme, toggleTheme } = useTheme()
 
     useMotionValueEvent(scrollY, "change", (latest) => {
-        setIsScrolled(latest > 50)
+        setIsScrolled(latest > 30)
     })
 
     // Track active section via IntersectionObserver
     useEffect(() => {
-        const sectionIds = navLinks.map(l => l.href.replace("#", ""))
+        const sectionIds = ["home", "about", "projects", "achievements", "experience", "certifications", "contact"]
         const observers: IntersectionObserver[] = []
 
-        sectionIds.forEach(id => {
+        sectionIds.forEach((id) => {
             const el = document.getElementById(id)
             if (!el) return
             const observer = new IntersectionObserver(
@@ -47,13 +58,12 @@ export function Navbar() {
             observers.push(observer)
         })
 
-        return () => observers.forEach(o => o.disconnect())
+        return () => observers.forEach((o) => o.disconnect())
     }, [])
 
-    // Smooth scroll handler
     const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
         e.preventDefault()
-        setIsOpen(false)
+        setMobileOpen(false)
         const element = document.querySelector(href)
         if (element) {
             element.scrollIntoView({ behavior: "smooth" })
@@ -61,92 +71,189 @@ export function Navbar() {
     }
 
     return (
-        <motion.header
-            className={cn(
-                "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-                isScrolled ? "bg-white/80 dark:bg-slate-950/80 backdrop-blur-md shadow-sm border-b border-white/20" : "bg-transparent py-2"
-            )}
-            initial={{ y: -100 }}
-            animate={{ y: 0 }}
-            transition={{ duration: 0.5 }}
-        >
-            <div className="container mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
-                {/* Brand */}
-                <Link href="/" className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-indigo-600">
-                    Portfolio
-                </Link>
+        <>
+            {/* ─── Desktop Floating Pill Navbar ─────────────────────────── */}
+            <motion.header
+                className="fixed top-4 left-0 right-0 z-50 hidden md:flex justify-center pointer-events-none"
+                initial={{ y: -80, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, ease: [0.215, 0.61, 0.355, 1] }}
+            >
+                <div
+                    className={cn(
+                        "pointer-events-auto flex items-center gap-1 px-2 py-2 rounded-full transition-all duration-300",
+                        "bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl",
+                        "border border-slate-200/60 dark:border-slate-700/60",
+                        isScrolled
+                            ? "shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
+                            : "shadow-[0_2px_16px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_16px_rgba(0,0,0,0.2)]"
+                    )}
+                >
+                    {/* Logo */}
+                    <a
+                        href="#about"
+                        onClick={(e) => handleScrollTo(e, "#about")}
+                        className="flex items-center gap-0.5 px-3 py-1 mr-1 select-none"
+                    >
+                        <span className="text-lg font-extrabold tracking-tight text-slate-800 dark:text-slate-100">
+                            MH
+                        </span>
+                        <span className="text-xl font-black text-indigo-500 leading-none mb-0.5">.</span>
+                    </a>
 
-                {/* Desktop Nav */}
-                <nav className="hidden md:flex items-center gap-1">
+                    {/* Divider */}
+                    <div className="w-px h-5 bg-slate-200 dark:bg-slate-700 mx-1" />
+
+                    {/* Nav Items */}
                     {navLinks.map((link) => {
-                        const isActive = activeSection === link.href.replace("#", "")
+                        const Icon = link.icon
+                        const sectionId = link.href.replace("#", "")
+                        const isActive = activeSection === sectionId
+
                         return (
                             <a
                                 key={link.name}
                                 href={link.href}
                                 onClick={(e) => handleScrollTo(e, link.href)}
                                 className={cn(
-                                    "relative text-sm font-medium px-3 py-1.5 rounded-full transition-all duration-200",
+                                    "relative flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 select-none",
                                     isActive
-                                        ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20"
-                                        : "text-muted-foreground hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800/50"
+                                        ? "bg-indigo-500 text-white shadow-sm"
+                                        : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800/70"
                                 )}
                             >
-                                {link.name}
+                                <Icon
+                                    className={cn(
+                                        "w-3.5 h-3.5 flex-shrink-0",
+                                        isActive ? "text-white" : ""
+                                    )}
+                                />
+                                <span>{link.name}</span>
                             </a>
                         )
                     })}
-                </nav>
 
-                {/* Actions */}
-                <div className="hidden md:flex items-center gap-4">
-                    <Button variant="ghost" size="icon" onClick={toggleTheme} className="relative overflow-hidden">
-                        <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                        <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                    </Button>
-                    <Button variant="outline" size="sm" className="hidden lg:flex" asChild>
-                        <a href="/CV.pdf" target="_blank" rel="noopener noreferrer">
-                            <Download className="mr-2 h-4 w-4" /> CV
-                        </a>
-                    </Button>
-                    <Button size="sm" asChild>
-                        <a href="#contact" onClick={(e) => handleScrollTo(e, "#contact")}> Let's Talk </a>
-                    </Button>
+                    {/* Divider */}
+                    <div className="w-px h-5 bg-slate-200 dark:bg-slate-700 mx-1" />
+
+                    {/* EN/ID Language Button (decorative) */}
+                    <button
+                        className={cn(
+                            "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium",
+                            "border border-slate-200 dark:border-slate-700",
+                            "text-slate-600 dark:text-slate-300",
+                            "hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors duration-200",
+                            "cursor-default select-none"
+                        )}
+                        tabIndex={-1}
+                        aria-hidden="true"
+                    >
+                        <Globe className="w-3.5 h-3.5" />
+                        <span>EN</span>
+                    </button>
+
+                    {/* Theme Toggle */}
+                    <button
+                        onClick={toggleTheme}
+                        className={cn(
+                            "flex items-center justify-center w-8 h-8 rounded-full ml-0.5",
+                            "text-slate-500 dark:text-slate-400",
+                            "hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200"
+                        )}
+                        aria-label="Toggle theme"
+                    >
+                        <Sun className="h-3.5 w-3.5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                        <Moon className="absolute h-3.5 w-3.5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                    </button>
+                </div>
+            </motion.header>
+
+            {/* ─── Mobile Navbar ─────────────────────────────────────────── */}
+            <motion.header
+                className="fixed top-0 left-0 right-0 z-50 md:hidden"
+                initial={{ y: -60, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.4 }}
+            >
+                <div
+                    className={cn(
+                        "flex items-center justify-between px-4 h-14 transition-all duration-300",
+                        "bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl",
+                        "border-b border-slate-200/60 dark:border-slate-800/60",
+                        isScrolled ? "shadow-sm" : ""
+                    )}
+                >
+                    {/* Logo */}
+                    <a
+                        href="#about"
+                        onClick={(e) => handleScrollTo(e, "#about")}
+                        className="flex items-center gap-0.5 select-none"
+                    >
+                        <span className="text-lg font-extrabold text-slate-800 dark:text-slate-100">MH</span>
+                        <span className="text-xl font-black text-indigo-500">.</span>
+                    </a>
+
+                    <div className="flex items-center gap-2">
+                        {/* EN Badge */}
+                        <span className="flex items-center gap-1 px-2.5 py-1 rounded-full border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-500 dark:text-slate-400">
+                            <Globe className="w-3 h-3" /> EN
+                        </span>
+                        {/* Theme */}
+                        <button
+                            onClick={toggleTheme}
+                            className="flex items-center justify-center w-8 h-8 rounded-full text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                        >
+                            <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                        </button>
+                        {/* Hamburger */}
+                        <button
+                            onClick={() => setMobileOpen((v) => !v)}
+                            className="flex items-center justify-center w-8 h-8 rounded-full text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                            aria-label="Toggle menu"
+                        >
+                            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                        </button>
+                    </div>
                 </div>
 
-                {/* Mobile Menu */}
-                <div className="md:hidden">
-                    <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                        <SheetTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                                <Menu className="h-6 w-6" />
-                            </Button>
-                        </SheetTrigger>
-                        <SheetContent side="right" className="w-[80vw] sm:w-[350px]">
-                            <div className="flex flex-col gap-6 mt-8">
-                                {navLinks.map((link) => (
-                                    <a
-                                        key={link.name}
-                                        href={link.href}
-                                        onClick={(e) => handleScrollTo(e, link.href)}
-                                        className="text-lg font-medium text-foreground hover:text-primary transition-colors"
-                                    >
-                                        {link.name}
-                                    </a>
-                                ))}
-                                <div className="h-px bg-border my-2" />
-                                <Button variant="ghost" size="lg" onClick={toggleTheme} className="w-full justify-start gap-3">
-                                    {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-                                    {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-                                </Button>
-                                <Button className="w-full" asChild>
-                                    <a href="/CV.pdf" target="_blank">Download CV</a>
-                                </Button>
+                {/* Mobile Dropdown */}
+                <AnimatePresence>
+                    {mobileOpen && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -10, scaleY: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scaleY: 1 }}
+                            exit={{ opacity: 0, y: -10, scaleY: 0.95 }}
+                            transition={{ duration: 0.2 }}
+                            className="mx-3 mt-1 rounded-2xl overflow-hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200/60 dark:border-slate-700/60 shadow-lg"
+                        >
+                            <div className="p-2 flex flex-col gap-0.5">
+                                {navLinks.map((link) => {
+                                    const Icon = link.icon
+                                    const sectionId = link.href.replace("#", "")
+                                    const isActive = activeSection === sectionId
+                                    return (
+                                        <a
+                                            key={link.name}
+                                            href={link.href}
+                                            onClick={(e) => handleScrollTo(e, link.href)}
+                                            className={cn(
+                                                "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-150",
+                                                isActive
+                                                    ? "bg-indigo-500 text-white"
+                                                    : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60"
+                                            )}
+                                        >
+                                            <Icon className="w-4 h-4 flex-shrink-0" />
+                                            {link.name}
+                                        </a>
+                                    )
+                                })}
                             </div>
-                        </SheetContent>
-                    </Sheet>
-                </div>
-            </div>
-        </motion.header>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </motion.header>
+        </>
     )
 }

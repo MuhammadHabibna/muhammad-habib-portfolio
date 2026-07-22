@@ -101,6 +101,7 @@ export interface Profile {
     id: string
     full_name: string
     headline: string | null
+    tagline: string | null
     bio_short: string | null
     bio_long: string | null
     location: string | null

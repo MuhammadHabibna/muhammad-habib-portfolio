@@ -130,7 +130,18 @@ export default function ProfilePage() {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="bio_short">Short Bio</Label>
+                            <Label htmlFor="tagline">Tagline <span className="text-muted-foreground text-xs">(Home section — 1–2 short sentences)</span></Label>
+                            <Textarea
+                                id="tagline"
+                                className="min-h-[60px]"
+                                placeholder="e.g. Building AI-powered solutions that create real-world impact."
+                                value={(profile as any).tagline || ""}
+                                onChange={e => setProfile({ ...profile, tagline: e.target.value } as any)}
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="bio_short">Short Bio <span className="text-muted-foreground text-xs">(About section — full bio)</span></Label>
                             <Textarea
                                 id="bio_short"
                                 className="min-h-[100px]"
