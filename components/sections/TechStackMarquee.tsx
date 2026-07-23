@@ -2,6 +2,7 @@
 
 import { useRef } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
+import { VelocityScroll } from "@/components/VelocityScroll"
 
 // ── Tech items: name + devicon image URL ──────────────────────────────────────
 const ROW_1 = [
@@ -128,13 +129,16 @@ export function TechStackMarquee() {
                 </h2>
             </motion.div>
 
-            {/* Row 1 — scrolls left */}
-            <div className="mb-4">
-                <MarqueeRow items={ROW_1} direction="left" speed={30} />
-            </div>
+            {/* Velocity-aware marquee rows */}
+            <VelocityScroll>
+                {/* Row 1 — scrolls left */}
+                <div className="mb-4">
+                    <MarqueeRow items={ROW_1} direction="left" speed={30} />
+                </div>
 
-            {/* Row 2 — scrolls right (opposite) */}
-            <MarqueeRow items={ROW_2} direction="right" speed={25} />
+                {/* Row 2 — scrolls right (opposite) */}
+                <MarqueeRow items={ROW_2} direction="right" speed={25} />
+            </VelocityScroll>
         </section>
     )
 }

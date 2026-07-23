@@ -14,7 +14,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { ImageUpload } from "@/components/admin/ImageUpload"
 import { Card, CardContent } from "@/components/ui/card"
-import { Loader2, X, Plus } from "lucide-react"
+import { Loader2, X, Plus, Pin } from "lucide-react"
+import { Switch } from "@/components/ui/switch"
 import { Project, PROJECT_CATEGORIES } from "@/types"
 
 const projectSchema = z.object({
@@ -23,6 +24,8 @@ const projectSchema = z.object({
     type: z.enum(["PERSONAL", "TEAM"]),
     project_category: z.array(z.enum(PROJECT_CATEGORIES)).min(1, "Select at least one category"),
     status: z.enum(["DRAFT", "PUBLISHED"]),
+    is_pinned: z.boolean().default(false),
+    featured_order: z.number().nullable().optional(),
     start_date: z.string().optional().or(z.literal("")),
     end_date: z.string().optional().or(z.literal("")),
     role: z.string().optional(),
@@ -57,6 +60,8 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
         type: initialData?.type || "PERSONAL",
         project_category: initialData?.project_category || [],
         status: initialData?.status || "DRAFT",
+        is_pinned: initialData?.is_pinned || false,
+        featured_order: initialData?.featured_order ?? null,
         start_date: initialData?.start_date || "",
         end_date: initialData?.end_date || "",
         role: initialData?.role || "",
@@ -85,6 +90,8 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
                 type: values.type,
                 project_category: values.project_category,
                 status: values.status,
+                is_pinned: values.is_pinned,
+                featured_order: values.featured_order ?? null,
                 role: values.role || null,
                 summary: values.summary || null,
                 description: values.description || null,
@@ -117,9 +124,62 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
         }
     }
 
+    const isPinned = form.watch("is_pinned")
+
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-4xl">
+
+                {/* ── Featured / Pin Toggle ──────────────────── */}
+                <Card className={`border-2 transition-colors ${isPinned ? "border-amber-400 bg-amber-50 dark:bg-amber-950/20" : "border-dashed"}`}>
+                    <CardContent className="flex items-center justify-between p-4">
+                        <div className="flex items-center gap-3">
+                            <Pin className={`h-5 w-5 ${isPinned ? "text-amber-500 fill-amber-500" : "text-muted-foreground"}`} />
+                            <div>
+                                <p className="font-semibold text-sm">{isPinned ? "📌 Featured Project" : "Pin as Featured"}</p>
+                                <p className="text-xs text-muted-foreground">Pinned projects appear in the &quot;Featured Works&quot; section</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            {isPinned && (
+                                <FormField
+                                    control={form.control}
+                                    name="featured_order"
+                                    render={({ field }) => (
+                                        <FormItem className="flex items-center gap-2 space-y-0">
+                                            <FormLabel className="text-xs whitespace-nowrap">Order</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    type="number"
+                                                    min={1}
+                                                    max={99}
+                                                    className="w-20 h-8 text-sm"
+                                                    value={field.value ?? ""}
+                                                    onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                                                />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+                            )}
+                            <FormField
+                                control={form.control}
+                                name="is_pinned"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormControl>
+                                            <Switch
+                                                checked={field.value}
+                                                onCheckedChange={field.onChange}
+                                            />
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                    </CardContent>
+                </Card>
+
                 <div className="grid md:grid-cols-2 gap-6">
                     <FormField
                         control={form.control}

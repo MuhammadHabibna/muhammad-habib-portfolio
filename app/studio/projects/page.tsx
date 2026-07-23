@@ -64,12 +64,22 @@ export default function ProjectsAdminPage() {
                                     <img src={project.thumbnail_image} className="w-16 h-16 object-cover rounded-md" />
                                 )}
                                 <div>
-                                    <h3 className="font-semibold text-lg">{project.title}</h3>
+                                    <div className="flex items-center gap-2">
+                                        <h3 className="font-semibold text-lg">{project.title}</h3>
+                                        {project.is_pinned && (
+                                            <span title="Featured" className="text-amber-500 text-base">📌</span>
+                                        )}
+                                    </div>
                                     <div className="flex gap-2 mt-1">
                                         <Badge variant="outline">{project.type}</Badge>
                                         <Badge className={project.status === "PUBLISHED" ? "bg-green-500" : "bg-yellow-500"}>
                                             {project.status}
                                         </Badge>
+                                        {project.is_pinned && (
+                                            <Badge className="bg-amber-500 text-white text-xs">
+                                                Featured #{project.featured_order ?? "–"}
+                                            </Badge>
+                                        )}
                                     </div>
                                 </div>
                             </div>

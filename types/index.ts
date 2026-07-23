@@ -27,6 +27,8 @@ export interface Project {
     type: ProjectType
     project_category: ProjectCategory[]
     status: ContentStatus
+    is_pinned: boolean
+    featured_order: number | null
     start_date: string | null
     end_date: string | null
     role: string | null

@@ -24,7 +24,10 @@ export function Projects({ projects }: ProjectsProps) {
     const [selectedProject, setSelectedProject] = useState<Project | null>(null)
     const [visibleCount, setVisibleCount] = useState(6)
 
-    const filteredProjects = projects.filter((p) => {
+    // Exclude pinned projects — they appear in FeaturedWorks section
+    const nonPinned = projects.filter(p => !p.is_pinned)
+
+    const filteredProjects = nonPinned.filter((p) => {
         const matchesScope = scopeFilter === "ALL" || p.type === scopeFilter
         const matchesCategory = categoryFilter === "ALL" || (p.project_category?.includes(categoryFilter as any))
 
@@ -52,8 +55,8 @@ export function Projects({ projects }: ProjectsProps) {
         <section id="projects" className="py-20 relative bg-slate-50/50 dark:bg-slate-900/50">
             <div className="container px-4 md:px-6">
                 <SectionHeading
-                    title="Featured Projects"
-                    subtitle="Explore my portfolio of AI, Machine Learning, and Web Application projects."
+                    title="All Projects"
+                    subtitle="Explore the complete portfolio of AI, Machine Learning, and Web Application projects."
                 />
 
                 {/* Controls */}

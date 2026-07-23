@@ -2,6 +2,7 @@ import { Navbar } from "@/components/Navbar"
 import { HomeSection } from "@/components/sections/HomeSection"
 import { AboutSection } from "@/components/sections/AboutSection"
 import { TechStackMarquee } from "@/components/sections/TechStackMarquee"
+import { FeaturedWorks } from "@/components/sections/FeaturedWorks"
 import { Projects } from "@/components/sections/Projects"
 import { Certifications } from "@/components/sections/Certifications"
 import { Organizations } from "@/components/sections/Organizations"
@@ -11,6 +12,7 @@ import { Footer } from "@/components/Footer"
 import { SectionDivider } from "@/components/SectionDivider"
 import { VectorCloudBackground } from "@/components/background/VectorCloudBackground"
 import { PageTransition } from "@/components/PageTransition"
+import { StickySection } from "@/components/StickySection"
 import { createClient } from "@/lib/supabase/server"
 import { DUMMY_SOCIALS } from "@/lib/data"
 
@@ -68,52 +70,57 @@ export default async function Home() {
       <PageTransition>
         <Navbar />
 
-        {/* ── Home Hero ──────────────────────── */}
-        <HomeSection
-          profile={portfolioData.profile}
-          socials={portfolioData.socials}
-        />
+        {/* ── STACKING SECTIONS (overlapping scroll) ── */}
+        <StickySection index={0} total={3} bgClass="bg-gradient-to-br from-indigo-50/60 via-background to-teal-50/30 dark:from-indigo-950/20 dark:via-background dark:to-teal-950/10">
+          <HomeSection
+            profile={portfolioData.profile}
+            socials={portfolioData.socials}
+          />
+        </StickySection>
+
+        <StickySection index={1} total={3}>
+          <AboutSection
+            profile={portfolioData.profile}
+            socials={portfolioData.socials}
+            projects={portfolioData.projects}
+            achievements={portfolioData.achievements}
+            certifications={portfolioData.certifications}
+            counts={counts}
+          />
+        </StickySection>
+
+        <StickySection index={2} total={3} bgClass="bg-slate-50/80 dark:bg-slate-900/80">
+          <TechStackMarquee />
+        </StickySection>
+
+        {/* ── NORMAL SCROLL sections below ── */}
+
+        {/* ── Featured Works ─────────────── */}
+        <FeaturedWorks projects={portfolioData.projects} />
 
         <SectionDivider variant="wave" />
 
-        {/* ── About ─────────────────────────── */}
-        <AboutSection
-          profile={portfolioData.profile}
-          socials={portfolioData.socials}
-          projects={portfolioData.projects}
-          achievements={portfolioData.achievements}
-          certifications={portfolioData.certifications}
-          counts={counts}
-        />
-
-        <SectionDivider variant="curve" flip />
-
-        {/* ── Tech Stack Marquee ────────────── */}
-        <TechStackMarquee />
-
-        <SectionDivider variant="wave" />
-
-        {/* ── Projects ──────────────────────── */}
+        {/* ── All Projects ───────────────── */}
         <Projects projects={portfolioData.projects} />
 
         <SectionDivider variant="wave" />
 
-        {/* ── Achievements ──────────────────── */}
+        {/* ── Achievements ──────────────── */}
         <Achievements achievements={portfolioData.achievements} />
 
         <SectionDivider variant="angled" flip />
 
-        {/* ── Organizations / Experience ─────── */}
+        {/* ── Organizations / Experience ── */}
         <Organizations organizations={portfolioData.organizations} />
 
         <SectionDivider variant="curve" />
 
-        {/* ── Certifications ─────────────────── */}
+        {/* ── Certifications ─────────────── */}
         <Certifications certifications={portfolioData.certifications} />
 
         <SectionDivider variant="wave" flip />
 
-        {/* ── Contact ───────────────────────── */}
+        {/* ── Contact ───────────────────── */}
         <Contact />
 
         <Footer />
