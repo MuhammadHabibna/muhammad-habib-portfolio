@@ -136,7 +136,7 @@ export function BentoProfile({ profile, socials, counts, projects = [], achievem
                                 </a>
                             </Button>
                             <PDFDownloadButton
-                                profile={profile || { id: "", full_name: fullName, headline: headline, bio_short: bioShort, bio_long: null, location: location, profile_photo: null, banner_image: null, cv_url: null, contact_email: null }}
+                                profile={profile || { id: "", full_name: fullName, headline: headline, tagline: null, bio_short: bioShort, bio_long: null, location: location, profile_photo: null, banner_image: null, cv_url: null, contact_email: null }}
                                 socials={socials || []}
                                 projects={projects}
                                 achievements={achievements}
