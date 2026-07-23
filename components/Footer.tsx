@@ -1,13 +1,8 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ArrowUp, Github, Linkedin, Mail, ExternalLink } from "lucide-react"
+import { ArrowUp, Github, Linkedin, Mail } from "lucide-react"
 import { Button } from "@/components/ui/button"
-
-const TECH_STACK = [
-    "Next.js", "React", "TypeScript", "Tailwind CSS", "Supabase", "Framer Motion",
-    "Vercel", "Node.js", "Python", "PostgreSQL", "Docker", "Git",
-]
 
 const FOOTER_LINKS = [
     { name: "About", href: "#about" },
@@ -24,20 +19,6 @@ export function Footer() {
 
     return (
         <footer className="relative bg-slate-900 dark:bg-slate-950 text-white overflow-hidden">
-            {/* Tech marquee strip */}
-            <div className="border-b border-white/10 py-4 overflow-hidden">
-                <motion.div
-                    animate={{ x: [0, -1200] }}
-                    transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-                    className="flex gap-8 whitespace-nowrap"
-                >
-                    {[...TECH_STACK, ...TECH_STACK, ...TECH_STACK].map((tech, i) => (
-                        <span key={i} className="text-sm font-mono text-white/40 uppercase tracking-widest">
-                            {tech} <span className="text-indigo-500/40 mx-4">•</span>
-                        </span>
-                    ))}
-                </motion.div>
-            </div>
 
             <div className="container mx-auto px-4 md:px-6 py-12 md:py-16">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16">
@@ -77,18 +58,6 @@ export function Footer() {
                                 </a>
                             ))}
                         </nav>
-                    </div>
-
-                    {/* Tech Stack */}
-                    <div className="space-y-4">
-                        <h4 className="text-sm font-semibold uppercase tracking-wider text-white/80">Built With</h4>
-                        <div className="flex flex-wrap gap-2">
-                            {TECH_STACK.slice(0, 8).map(tech => (
-                                <span key={tech} className="text-xs font-mono px-2.5 py-1 rounded-full border border-white/10 text-white/50 hover:text-indigo-400 hover:border-indigo-400/30 transition-colors">
-                                    {tech}
-                                </span>
-                            ))}
-                        </div>
                     </div>
                 </div>
 

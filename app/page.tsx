@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/Navbar"
 import { HomeSection } from "@/components/sections/HomeSection"
 import { AboutSection } from "@/components/sections/AboutSection"
+import { TechStackMarquee } from "@/components/sections/TechStackMarquee"
 import { Projects } from "@/components/sections/Projects"
 import { Certifications } from "@/components/sections/Certifications"
 import { Organizations } from "@/components/sections/Organizations"
@@ -86,6 +87,11 @@ export default async function Home() {
         />
 
         <SectionDivider variant="curve" flip />
+
+        {/* ── Tech Stack Marquee ────────────── */}
+        <TechStackMarquee />
+
+        <SectionDivider variant="wave" />
 
         {/* ── Projects ──────────────────────── */}
         <Projects projects={portfolioData.projects} />
