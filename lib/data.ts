@@ -4,6 +4,7 @@ export const DUMMY_PROFILE: Profile = {
     id: "1",
     full_name: "Alex Sterling",
     headline: "Senior Full-Stack Engineer | AI & Cloud Architect",
+    tagline: "Building scalable AI-powered web applications with modern tech.",
     bio_short: "Building scalable web applications and intelligent systems. Passionate about clean code, open source, and user-centric design.",
     bio_long: "With over 6 years of experience in the tech industry, I have worked with startups and large enterprises to deliver high-quality software solutions.",
     location: "San Francisco, CA",
