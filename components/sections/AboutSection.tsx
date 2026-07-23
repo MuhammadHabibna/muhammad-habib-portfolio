@@ -130,17 +130,14 @@ export function AboutSection({
                             <p className="text-sm font-semibold tracking-[0.2em] uppercase text-slate-400 dark:text-slate-500">
                                 About me
                             </p>
+                            {/* Name — single block */}
                             <div className="flex flex-wrap items-center gap-3">
                                 <span className="text-2xl font-bold text-slate-700 dark:text-slate-300">I AM</span>
                                 <span className="px-4 py-1.5 rounded-lg bg-indigo-500 text-white text-2xl font-bold tracking-tight">
-                                    {firstName.toUpperCase()}
+                                    {fullName.toUpperCase()}
                                 </span>
-                                {lastName && (
-                                    <span className="px-4 py-1.5 rounded-lg bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 text-2xl font-bold tracking-tight">
-                                        {lastName.toUpperCase()}
-                                    </span>
-                                )}
                             </div>
+                            {/* Headline — separate highlight */}
                             <div className="inline-flex">
                                 <span className="px-4 py-1.5 rounded-lg bg-teal-500 text-white text-lg font-bold tracking-wider uppercase">
                                     {headline}

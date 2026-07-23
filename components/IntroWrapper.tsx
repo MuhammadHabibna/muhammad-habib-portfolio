@@ -6,10 +6,15 @@ import { IntroAnimation } from "./IntroAnimation"
 export function IntroWrapper({ children }: { children: React.ReactNode }) {
   const [introComplete, setIntroComplete] = useState(false)
 
+  const handleComplete = () => {
+    window.scrollTo({ top: 0, behavior: "instant" })
+    setIntroComplete(true)
+  }
+
   return (
     <>
       {!introComplete && (
-        <IntroAnimation onComplete={() => setIntroComplete(true)} />
+        <IntroAnimation onComplete={handleComplete} />
       )}
       <div
         style={{
@@ -23,3 +28,4 @@ export function IntroWrapper({ children }: { children: React.ReactNode }) {
     </>
   )
 }
+
